@@ -22,9 +22,10 @@ const Ctas = () => {
     <div>
       <Header />
       <Row gutter={[16, 16]} style={{ marginTop: "3rem", marginLeft: "3rem" }}>
-        {ctaData?.map((cta) => (
+        {ctaData?.map((cta, index) => (
           <Col span={8}>
             <Card
+              key={index}
               sx={{
                 width: "90%",
                 height: 550,

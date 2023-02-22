@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import usePostCtaData from "../../hooks/postCtaData";
 
 const Form = () => {
   const [name, setName] = useState("");
@@ -6,11 +7,30 @@ const Form = () => {
   const [description, setDescription] = useState("");
   const [outcome, setOutcome] = useState("");
   const [successCriteria, setSuccessCriteria] = useState("");
-  
+
+  const { ctaData, postData } = usePostCtaData();
+  const [formData, setFormData] = useState({
+    name: "",
+    resources: "",
+    description: "",
+    outcome: "",
+    successCriteria: "",
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+    postData(formData);
+    setFormData({
+      name: "",
+      resources: "",
+      description: "",
+      outcome: "",
+      successCriteria: "",
+    });
+  };
+
+  const handleInputChange = (event) => {
+    setFormData({ ...formData, [event.target.name]: event.target.value });
   };
 
   return (
@@ -28,10 +48,11 @@ const Form = () => {
           </label>
           <input
             className="appearance-none block w-full bg-gray-100 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-            id="title"
+            id="name"
+            name="name"
             type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={formData.name}
+            onChange={handleInputChange}
           />
         </div>
         <div className="flex flex-wrap -mx-3 mb-6">
@@ -44,8 +65,9 @@ const Form = () => {
           <textarea
             className="appearance-none block w-full h-22 bg-gray-100 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
             id="resources"
-            value={resources}
-            onChange={(e) => setResources(e.target.value)}
+            name="resources"
+            value={formData.resources}
+            onChange={handleInputChange}
           ></textarea>
         </div>
         <div className="flex flex-wrap -mx-3 mb-6">
@@ -58,8 +80,9 @@ const Form = () => {
           <textarea
             className="appearance-none block w-full h-32 bg-gray-100 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
             id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            name="description"
+            value={formData.description}
+            onChange={handleInputChange}
           ></textarea>
         </div>
         <div className="flex flex-wrap -mx-3 mb-6">
@@ -72,8 +95,9 @@ const Form = () => {
           <textarea
             className="appearance-none block w-full h-22 bg-gray-100 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
             id="outcome"
-            value={outcome}
-            onChange={(e) => setOutcome(e.target.value)}
+            name="outcome"
+            value={formData.outcome}
+            onChange={handleInputChange}
           ></textarea>
         </div>
         <div className="flex flex-wrap -mx-3 mb-6">
@@ -86,8 +110,9 @@ const Form = () => {
           <textarea
             className="appearance-none block w-full h-22 bg-gray-100 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
             id="successCriteria"
-            value={successCriteria}
-            onChange={(e) => setSuccessCriteria(e.target.value)}
+            name="successCriteria"
+            value={formData.successCriteria}
+            onChange={handleInputChange}
           ></textarea>
         </div>
         <div className="flex justify-between">
@@ -97,7 +122,6 @@ const Form = () => {
           >
             Submit
           </button>
-
         </div>
       </form>
     </div>

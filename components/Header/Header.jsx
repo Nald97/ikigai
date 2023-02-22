@@ -3,6 +3,7 @@ import logo from "../../public/abstract.png";
 import Image from "next/image";
 import Form from "../form/Form";
 import Link from "next/link";
+import usePostCtaData from "../../hooks/postCtaData";
 
 const MyHeader = ({ onFormOpen }) => {
   return (
@@ -57,7 +58,16 @@ const Header = () => {
   const [showForm, setShowForm] = useState(false);
 
   const handleFormSubmit = (formData) => {
-    // handle form submit here (e.g. submit to API or update state)
+    console.log(formData);
+    setShowForm(false);
+
+    fetch("/api/ctas", {
+      method: "POST",
+      body: JSON.stringify(formData),
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data));
+
   };
 
   return (
