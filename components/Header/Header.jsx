@@ -6,18 +6,18 @@ import Link from "next/link";
 
 const MyHeader = ({ onFormOpen }) => {
   return (
-    <header className="flex w-full items-center justify-between bg-gray-900 py-8 px-8">
+    <header className="flex w-full items-center justify-between bg-gray-900 py-4 px-4">
       <div className="flex items-center">
         <div className="mr-2">
-          <Image src={logo} alt="logo" className="w-20 h-20"></Image>
+          <Image src={logo} alt="logo" className="w-10 h-10"></Image>
         </div>
         <div>
-          <h1 className="text-4xl font-bold text-white">| littlefish</h1>
+          <h1 className="text-2xl font-bold text-white">| littlefish</h1>
         </div>
       </div>
 
       <nav>
-        <ul className="flex w-full items-center text-2xl">
+        <ul className="flex w-full items-center text-xl">
           <li className="ml-4">
             <Link href="/" className="text-white hover:text-white-bold">
               Home

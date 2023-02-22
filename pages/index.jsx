@@ -18,13 +18,7 @@ const HomePage = () => {
 
   return (
     <div>
-      <Header />
-      {/* <AvatarCard />
-      <SkillsCard />
-      <BioCard />
-      <ExperienceCard />
-      <PassionsCard /> */}
-      
+      <Header /> 
     </div>
   );
 };
