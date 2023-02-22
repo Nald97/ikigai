@@ -8,15 +8,14 @@ const PersonalNeedsCard = (props) => {
     <Card
       title="Personal Needs"
       style={{
-        width: 500,
-        height: 300,
+        width: 250,
+        height: "auto",
         background: "rgb(31, 48, 63)",
         opacity: 0.9,
 
-        top: -950,
-        left: 800,
+        top: -425,
+        left: 400,
         color: "#ffffff",
-        fontSize: "25px",
       }}
     >
       {personalNeeds}

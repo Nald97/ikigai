@@ -8,15 +8,14 @@ const ProfessionalNeedsCard = (props) => {
     <Card
       title="Professional Needs"
       style={{
-        width: 500,
-        height: 300,
+        width: 250,
+        height: "auto",
         background: "rgb(70, 76, 69)",
         opacity: 0.9,
 
-        top: -1020,
-        left: 800,
+        top: -510,
+        left: 400,
         color: "#ffffff",
-        fontSize: "25px",
       }}
     >
       {professionalNeeds}

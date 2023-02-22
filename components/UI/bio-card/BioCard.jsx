@@ -10,15 +10,13 @@ const BioCard = (props) => {
       <Card
         title="Bio"
         style={{
-          width: 500,
-          height: 700,
+          width: 250,
+          height: "auto",
           background: "rgb(70, 76, 69)",
           opacity: 0.9,
-
-          top: 260,
-          left: -250,
+          top: 223,
+          left: -125,
           color: "#ffffff",
-          fontSize: "30px",
         }}
       >
         {bio}

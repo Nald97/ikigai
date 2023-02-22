@@ -23,14 +23,14 @@ const SkillsCard = (props) => {
         color="white !important"
         
         style={{
-          width: 500,
-          height: 280,
+          width: 250,
+          height: 140,
           background: "rgb(70, 76, 69)",
           opacity: 0.9,
-          top: -407,
-          left: 800,
+          top: -124,
+          left: 400,
           font: "#ffffff",
-          fontSize: "25px",
+          
           overflow: "hidden",
         }}
       >

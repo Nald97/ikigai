@@ -15,37 +15,34 @@ const AvatarCard = (props) => {
   const name = props.name;
 
   return (
-    <div>
-      <Card
-        style={{
-          width: 500,
-          height: 650,
-          opacity: 0.9,
-          top: 250,
-          left: 250,
-          color: "white",
-          background: "black",
-        }}
-        ant-card-meta-title-color="white"
-        cover={
-          <div>
-            {/* <Meta style={{ margin: "50px"}} title="Card title"  /> */}
-            <h1
-              style={{
-                margin: "50px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "30px",
-              }}
-            >
-              {name}
-            </h1>
-            <Image alt="example" src={avatar} />
-          </div>
-        }
-      ></Card>
-    </div>
+    <Card
+      style={{
+        width: 250,
+        height: 250,
+        opacity: 0.9,
+        top: 125,
+        left: 125,
+        color: "white",
+        background: "black",
+      }}
+      ant-card-meta-title-color="white"
+      cover={
+        <div>
+          {/* <Meta style={{ margin: "50px"}} title="Card title"  /> */}
+          <h1
+            style={{
+              margin: "50px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {name}
+          </h1>
+          <Image alt="example" src={avatar} />
+        </div>
+      }
+    ></Card>
   );
 };
 

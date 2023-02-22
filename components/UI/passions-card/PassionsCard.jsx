@@ -20,11 +20,11 @@ const PassionsCard = () => {
       color="white !important"
       style={{
         borderRadius: 10,
-        width: 800,
-        height: 650,
+        width: 400,
+        height: 360,
         background: "rgb(31, 48, 63)",
-        top: -687,
-        left: 1450,
+        top: -560,
+        left: 725,
         font: "#ffffff",
       }}
     >
@@ -57,7 +57,6 @@ const PassionsCard = () => {
           <img
             className="fea"
             src="https://picsum.photos/200/200"
-            height="100%"
             width="100%"
           />
         </label>
@@ -65,7 +64,6 @@ const PassionsCard = () => {
           <img
             className="fea"
             src="https://picsum.photos/200/300"
-            height="100%"
             width="100%"
           />
         </label>
@@ -73,7 +71,6 @@ const PassionsCard = () => {
           <img
             className="fea"
             src="https://picsum.photos/300/300"
-            height="100%"
             width="100%"
           />
         </label>

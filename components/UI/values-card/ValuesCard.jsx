@@ -18,15 +18,14 @@ const ValuesCard = (props) => {
       <Card
         title="Values"
         style={{
-          width: 300,
+          width: 150,
           height: "auto",
           background: "rgb(70, 76, 69)",
           opacity: 0.9,
 
-          top: -2350,
-          left: 2400,
+          top: -1125,
+          left: 1200,
           color: "#ffffff",
-          fontSize: "30px",
         }}
       >
         {ValuesList}

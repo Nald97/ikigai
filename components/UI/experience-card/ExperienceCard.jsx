@@ -3,7 +3,6 @@ import { Card, Space } from "antd";
 import useSheetData from "../../../hooks/getSheetData";
 
 const ExperienceCard = (props) => {
- 
   const experience = props.experience;
 
   // Split the experience string at each comma and map over the resulting array
@@ -19,16 +18,14 @@ const ExperienceCard = (props) => {
       <Card
         title="Experience"
         color="white !important"
-        
         style={{
-          width: 500,
-          height: 280,
+          width: 250,
+          height: "auto",
           background: "rgb(31, 48, 63)",
           opacity: 0.9,
-          top: -40,
-          left: -200,
+          top: 48,
+          left: -100,
           font: "#ffffff",
-          fontSize: "25px",
         }}
       >
         <div style={{ color: "white" }}>{experienceList}</div>
