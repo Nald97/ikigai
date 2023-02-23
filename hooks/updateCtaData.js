@@ -5,7 +5,7 @@ const dbRef = ref(getDatabase(), "ctas");
 
 export default function useUpdateCtaData() {
   const updateCtaData = (cta) => {
-    const ctaRef = child(dbRef, cta.name);
+    const ctaRef = child(dbRef, cta.key);
     set(ctaRef, cta);
   };
 
