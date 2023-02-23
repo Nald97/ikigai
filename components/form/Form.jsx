@@ -2,13 +2,7 @@ import React, { useState } from "react";
 import usePostCtaData from "../../hooks/postCtaData";
 
 const Form = () => {
-  const [name, setName] = useState("");
-  const [resources, setResources] = useState("");
-  const [description, setDescription] = useState("");
-  const [outcome, setOutcome] = useState("");
-  const [successCriteria, setSuccessCriteria] = useState("");
-
-  const { ctaData, postData } = usePostCtaData();
+  const { newCtaData, postData } = usePostCtaData();
   const [formData, setFormData] = useState({
     name: "",
     resources: "",

@@ -8,12 +8,12 @@ import { db } from "../firebase-config";
 const dbRef = ref(db, "ctas");
 
 export default function usePostCtaData() {
-  const [ctaData, setCtaData] = useState(null);
+  const [newCtaData, setNewCtaData] = useState(null);
 
   const postData = (data) => {
     push(dbRef, data);
-    setCtaData(data);
+    seNewtCtaData(data);
   };
 
-  return { ctaData, postData };
+  return { newCtaData, postData };
 }
