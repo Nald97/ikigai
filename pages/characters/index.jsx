@@ -11,7 +11,6 @@ import avatar from "../../public/avatar.png";
 import useSheetData from "../../hooks/getSheetData";
 import Image from "next/image";
 import Link from "next/link";
-import Header from "../../components/Header/Header";
 
 const Characters = () => {
   const { sheetData } = useSheetData();
@@ -22,7 +21,6 @@ const Characters = () => {
 
   return (
     <div>
-      <Header />
       <Row gutter={[16, 16]} style={{ marginTop: "3rem", marginLeft: "3rem" }}>
         {sheetData?.map((user) => (
           <Col span={8}>

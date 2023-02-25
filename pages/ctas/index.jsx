@@ -9,7 +9,6 @@ import { CardActionArea } from "@mui/material";
 import useCtaData from "../../hooks/getCtaData";
 import Image from "next/image";
 import Link from "next/link";
-import Header from "../../components/Header/Header";
 import EditDeleteOptions from "../../components/UI/edit-delete-option/EditDeleteOptions";
 import useDeleteCtaData from "../../hooks/deleteCtaData";
 import EditCtaForm from "../../components/form/EditForm";
@@ -42,7 +41,7 @@ const Ctas = ({ onEditFormOpen }) => {
 
   return (
     <div>
-      <Header />
+     
       <Row gutter={[16, 16]} style={{ marginTop: "3rem", marginLeft: "3rem" }}>
         {ctaData?.map((cta, index) => {
           console.log("cta", cta);

@@ -1,5 +1,4 @@
 import { useRouter } from "next/router";
-import Header from "../../components/Header/Header";
 import useSheetData from "../../hooks/getSheetData";
 import AvatarCard from "../../components/UI/avatar-card/AvatarCard";
 import SkillsCard from "../../components/UI/skills-card/SkillsCard";
@@ -23,7 +22,7 @@ function CharacterPage() {
   // Pass the data for the selected character to the corresponding components
   return (
     <div>
-      <Header />
+    
       <AvatarCard name={selectedCharacter?.name} />
       <SkillsCard skills={selectedCharacter?.skills} />
       <BioCard bio={selectedCharacter?.bio} />

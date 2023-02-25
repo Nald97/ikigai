@@ -4,8 +4,8 @@
 
 body {
   background-image: url("../public/background.png");
-  background-size: cover;
-  background-repeat: no-repeat;
+  background-size: auto;
+  background-repeat: repeat-y;
   background-position: center;
   height: 100vh;
 }
