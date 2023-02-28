@@ -1,10 +1,75 @@
 import { useState } from "react";
-import { auth } from "../firebase-config";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth, firestore } from "../firebase-config";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
+import { collection, addDoc } from "firebase/firestore";
+import { useAuthValue } from "../components/context/AuthContext";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { AuthProvider } from "../components/context/AuthContext";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const router = useRouter();
+  const [displayName, setDisplayName] = useState("");
+
+  const validatePassword = () => {
+    let isValid = true;
+    if (password !== "" && confirmPassword !== "") {
+      if (password !== confirmPassword) {
+        isValid = false;
+        setError("Passwords does not match");
+      }
+    }
+    return isValid;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    if (validatePassword()) {
+      // Create a new user with email and password using firebase
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          sendEmailVerification(auth.currentUser)
+            .then(() => {
+              router.push("/");
+            })
+            .catch((err) => alert(err.message));
+        })
+
+        .catch((err) => setError(err.message));
+    }
+
+    const userRef = collection(firestore, "users");
+    const snapshot = addDoc(userRef, {
+      displayName: displayName,
+      email: email,
+      password: password,
+      skills: [],
+      projects: [],
+      bio: "",
+      experience: [],
+      personalNeeds: [],
+      professionalNeeds: [],
+      values: [],
+      passions: [],
+      aspirations: [],
+    });
+
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+    setDisplayName("");
+  };
+  const handleDisplayNameChange = (e) => {
+    setDisplayName(e.target.value);
+  };
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -14,18 +79,10 @@ const Signup = () => {
     setPassword(e.target.value);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Add logic for submitting the form to the server here
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        console.log("userCredential", userCredential);
-        // Signed in
-      })
-      .catch((error) => {
-        console.log("error", error);
-      });
+  const handleConfirmPasswordChange = (e) => {
+    setConfirmPassword(e.target.value);
   };
+
   return (
     <div className="flex flex-col items-center justify-center mt-20">
       <form
@@ -33,6 +90,23 @@ const Signup = () => {
         className="bg-white shadow-md rounded px-8 pt-6 pb-8 w-1/3"
       >
         <h1 className="text-3xl font-bold mb-4 justify-center flex">Sign Up</h1>
+        <div className="mb-4">
+          <label
+            className="block text-gray-700 font-bold mb-2"
+            htmlFor="displayName"
+          >
+            Name or Nickname
+          </label>
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="displayName"
+            type="text"
+            value={displayName}
+            onChange={handleDisplayNameChange}
+            placeholder="Name or Nickname"
+          />
+        </div>
+
         <div className="mb-4">
           <label className="block text-gray-700 font-bold mb-2" htmlFor="email">
             Email
@@ -59,6 +133,22 @@ const Signup = () => {
             type="password"
             value={password}
             onChange={handlePasswordChange}
+            placeholder="******************"
+          />
+        </div>
+        <div className="mb-4">
+          <label
+            className="block text-gray-700 font-bold mb-2"
+            htmlFor="confirmPassword"
+          >
+            Confirm Password
+          </label>
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="confirmPassword"
+            type="password"
+            value={confirmPassword}
+            onChange={handleConfirmPasswordChange}
             placeholder="******************"
           />
         </div>
