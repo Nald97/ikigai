@@ -4,7 +4,7 @@ import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
 } from "firebase/auth";
-import { collection, addDoc } from "firebase/firestore";
+import { setDoc, doc } from "firebase/firestore";
 import { useAuthValue } from "../components/context/AuthContext";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -33,40 +33,36 @@ const Signup = () => {
     e.preventDefault();
     setError("");
     if (validatePassword()) {
-      // Create a new user with email and password using firebase
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          sendEmailVerification(auth.currentUser)
-            .then(() => {
-              router.push("/");
-            })
-            .catch((err) => alert(err.message));
-        })
+      try {
+        // Create a new user with email and password using firebase
+        const response = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        await setDoc(doc(firestore, "users", response.user.uid), {
+          displayName: displayName,
+          email: email,
+          skills: [],
+          projects: [],
+          bio: "",
+          experience: [],
+          personalNeeds: [],
+          professionalNeeds: [],
+          values: [],
+          passions: [],
+          aspirations: [],
+        });
 
-        .catch((err) => setError(err.message));
+        await sendEmailVerification(auth.currentUser);
+
+        router.push("/");
+      } catch (err) {
+        setError(err.message);
+      }
     }
-
-    const userRef = collection(firestore, "users");
-    const snapshot = addDoc(userRef, {
-      displayName: displayName,
-      email: email,
-      password: password,
-      skills: [],
-      projects: [],
-      bio: "",
-      experience: [],
-      personalNeeds: [],
-      professionalNeeds: [],
-      values: [],
-      passions: [],
-      aspirations: [],
-    });
-
-    setEmail("");
-    setPassword("");
-    setConfirmPassword("");
-    setDisplayName("");
   };
+
   const handleDisplayNameChange = (e) => {
     setDisplayName(e.target.value);
   };

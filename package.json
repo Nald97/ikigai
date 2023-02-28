@@ -7,9 +7,10 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.0.1",
-    "@emotion/react": "^11.10.5",
-    "@emotion/styled": "^11.10.5",
-    "@mui/material": "^5.11.8",
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@mui/icons-material": "^5.11.11",
+    "@mui/material": "^5.11.11",
     "antd": "^5.2.0",
     "firebase": "^9.17.1",
     "firebase-tools": "^11.24.0",
