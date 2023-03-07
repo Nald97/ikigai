@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import EditForm from "../../form/EditForm";
 
 function EditDeleteOptions({ onDelete, onEditFormOpen, ctaData, index }) {
   const handleDelete = () => {

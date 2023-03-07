@@ -1,6 +1,5 @@
 import React from "react";
 import { Card, Space } from "antd";
-import useSheetData from "../../../hooks/getSheetData";
 
 const BioCard = (props) => {
   const bio = props.bio;

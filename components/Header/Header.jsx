@@ -3,11 +3,38 @@ import logo from "../../public/abstract.png";
 import Image from "next/image";
 import Form from "../form/Form";
 import Link from "next/link";
-import usePostCtaData from "../../hooks/postCtaData";
+import {
+  AiOutlineHome,
+  AiOutlineUserSwitch,
+  AiOutlineSearch,
+  AiOutlineMessage,
+  AiOutlineBell,
+} from "react-icons/ai";
+import { BsBriefcase } from "react-icons/bs";
+import { useRouter } from "next/router";
+import user from "../../public/user.png";
+import ProfilePopup from "../common/ProfilePopup";
 
-const MyHeader = ({ onFormOpen }) => {
+// TODO: Add icons to the nav bar and make it responsive. Add the user icon which will be used for logout and profile.
+
+const MyHeader = ({ onFormOpen, currentUser }) => {
+  const router = useRouter();
+  const [popupVisible, setPopupVisible] = useState(false);
+
+
+  const displayPopup = () => {
+    setPopupVisible(!popupVisible);
+  };
+
   return (
     <header className="flex w-full items-center justify-between bg-gray-900 py-4 px-4">
+      {popupVisible ? (
+        <div className="absolute top-[65px] right-[10px] z-50">
+          <ProfilePopup />
+        </div>
+      ) : (
+        <></>
+      )}
       <div className="flex items-center">
         <div className="mr-2">
           <Image src={logo} alt="logo" className="w-10 h-10"></Image>
@@ -15,41 +42,46 @@ const MyHeader = ({ onFormOpen }) => {
         <div>
           <h1 className="text-2xl font-bold text-white">| littlefish</h1>
         </div>
+
+        <nav>
+          <ul className="flex w-full items-center justify-between text-xl pl-100">
+            <li className="ml-4">
+              <AiOutlineHome
+                size={30}
+                color="white"
+                onClick={() => router.push("/")}
+              />
+            </li>
+            <li className="ml-4">
+              <AiOutlineUserSwitch
+                size={30}
+                color="white"
+                onClick={() => router.push("/characters")}
+              />
+            </li>
+            <li className="ml-4">
+              <BsBriefcase
+                size={30}
+                color="white"
+                onClick={() => router.push("/ctas")}
+              />
+            </li>
+          </ul>
+        </nav>
       </div>
 
-      <nav>
-        <ul className="flex w-full items-center text-xl">
-          <li className="ml-4">
-            <Link href="/" className="text-white hover:text-white-bold">
-              Home
-            </Link>
-          </li>
-          <li className="ml-4">
-            <Link
-              href="/characters"
-              className="text-white hover:text-white-bold"
-            >
-              Characters
-            </Link>
-          </li>
-          <li className="ml-4">
-            <Link
-              href="/ctas"
-              className="text-white hover:text-white font-size:5"
-            >
-              CTAs
-            </Link>
-          </li>
-          <li className="ml-4">
-            <button
+      <Image
+        src={user}
+        alt="user"
+        className="w-10 h-10"
+        onClick={displayPopup}
+      ></Image>
+      {/* <button
               onClick={onFormOpen}
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
             >
               Create a CTA
-            </button>
-          </li>
-        </ul>
-      </nav>
+            </button> */}
     </header>
   );
 };
@@ -67,7 +99,6 @@ const Header = () => {
     })
       .then((res) => res.json())
       .then((data) => console.log(data));
-
   };
 
   return (

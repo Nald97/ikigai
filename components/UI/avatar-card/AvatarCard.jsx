@@ -1,48 +1,21 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
+import { sliderClasses } from "@mui/material";
 import Image from "next/image";
-import {
-  EditOutlined,
-  EllipsisOutlined,
-  SettingOutlined,
-} from "@ant-design/icons";
-import { Avatar, Card } from "antd";
-import { color, positions } from "@mui/system";
 import avatar from "../../../public/avatar.png";
+import { getCurrentUser } from "../../../api/FirestoreAPI";
 
-const { Meta } = Card;
-
-const AvatarCard = (props) => {
-  const name = props.name;
-
+const AvatarCard = ({ currentUser }) => {
   return (
-    <Card
-      style={{
-        width: 250,
-        height: 250,
-        opacity: 0.9,
-        top: 125,
-        left: 125,
-        color: "white",
-        background: "black",
-      }}
-      ant-card-meta-title-color="white"
-      cover={
-        <div>
-          {/* <Meta style={{ margin: "50px"}} title="Card title"  /> */}
-          <h1
-            style={{
-              margin: "50px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            {name}
-          </h1>
-          <Image alt="example" src={avatar} />
-        </div>
-      }
-    ></Card>
+    <div className="bg-white p-3 border-t-4 border-green-400">
+      <div className="image overflow-hidden">
+        <Image className="h-auto w-full mx-auto" src={avatar} alt="" />
+      </div>
+      <h1 className="text-gray-900 font-bold text-xl leading-8 my-1">
+        {currentUser?.name}
+      </h1>
+
+      <p className="text-sm text-gray-500 hover:text-gray-600 leading-6"></p>
+    </div>
   );
 };
 

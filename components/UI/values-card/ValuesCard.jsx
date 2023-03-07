@@ -1,6 +1,5 @@
 import React from "react";
 import { Card, Space } from "antd";
-import useSheetData from "../../../hooks/getSheetData";
 
 const ValuesCard = (props) => {
   const values = props.values;

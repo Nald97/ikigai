@@ -1,13 +1,12 @@
 import React from "react";
 import { Card, Space } from "antd";
 
-const ExperienceCard = ({ currentUser }) => {
-  // experience?.map((exp) => {
-  //   console.log(exp);
-  // });
+const AspirationCard = (props) => {
+  const aspirations = props.aspirations;
+  const passions = props.passions;
 
   return (
-    <div className="bg-white p-3  rounded-sm shadow-sm">
+    <div className="bg-white p-3 shadow-sm rounded-sm">
       <div className="grid grid-cols-2">
         <div className="bg-gray-100 p-3 hover:shadow w-3/4">
           <div className="flex items-center space-x-2 font-semibold text-gray-900 leading-8 mb-3">
@@ -27,14 +26,14 @@ const ExperienceCard = ({ currentUser }) => {
                 />
               </svg>
             </span>
-            <span className="tracking-wide">Experience</span>
+            <span className="tracking-wide">Aspirations</span>
           </div>
           <ul className="list-inside space-y-2">
-            {/* {experience?.map((exp) => (
+            {aspirations?.map((asp) => (
               <li>
-                <div className="text-teal-600">{currentUser?.email}</div>
+                <div className="text-teal-600">{asp}</div>
               </li>
-            ))} */}
+            ))}
           </ul>
         </div>
         <div className="bg-gray-100 p-3 hover:shadow w-3/4">
@@ -60,13 +59,19 @@ const ExperienceCard = ({ currentUser }) => {
                 />
               </svg>
             </span>
-            <span className="tracking-wide">Education</span>
+            <span className="tracking-wide">Passions</span>
           </div>
-          <ul className="list-inside space-y-2"></ul>
+          <ul className="list-inside space-y-2">
+            {passions?.map((pas) => (
+              <li>
+                <div className="text-teal-600">{pas}</div>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </div>
   );
 };
 
-export default ExperienceCard;
+export default AspirationCard;

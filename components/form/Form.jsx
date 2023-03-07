@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-import usePostCtaData from "../../hooks/postCtaData";
 
 const Form = () => {
-  const { newCtaData, postData } = usePostCtaData();
   const [formData, setFormData] = useState({
     name: "",
     resources: "",
