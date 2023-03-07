@@ -107,37 +107,6 @@ export const editProfile = (userID, payload) => {
     });
 };
 
-export const likePost = (userId, postId, liked) => {
-  try {
-    let docToLike = doc(likeRef, `${userId}_${postId}`);
-    if (liked) {
-      deleteDoc(docToLike);
-    } else {
-      setDoc(docToLike, { userId, postId });
-    }
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-export const getLikesByUser = (userId, postId, setLiked, setLikesCount) => {
-  try {
-    let likeQuery = query(likeRef, where("postId", "==", postId));
-
-    onSnapshot(likeQuery, (response) => {
-      let likes = response.docs.map((doc) => doc.data());
-      let likesCount = likes?.length;
-
-      const isLiked = likes.some((like) => like.userId === userId);
-
-      setLikesCount(likesCount);
-      setLiked(isLiked);
-    });
-  } catch (err) {
-    console.log(err);
-  }
-};
-
 export const postComment = (postId, comment, timeStamp, name) => {
   try {
     addDoc(commentsRef, {
@@ -185,39 +154,6 @@ export const deletePost = (id) => {
   try {
     deleteDoc(docToDelete);
     toast.success("Post has been Deleted!");
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-export const addConnection = (userId, targetId) => {
-  try {
-    let connectionToAdd = doc(connectionRef, `${userId}_${targetId}`);
-
-    setDoc(connectionToAdd, { userId, targetId });
-
-    toast.success("Connection Added!");
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-export const getConnections = (userId, targetId, setIsConnected) => {
-  try {
-    let connectionsQuery = query(
-      connectionRef,
-      where("targetId", "==", targetId)
-    );
-
-    onSnapshot(connectionsQuery, (response) => {
-      let connections = response.docs.map((doc) => doc.data());
-
-      const isConnected = connections.some(
-        (connection) => connection.userId === userId
-      );
-
-      setIsConnected(isConnected);
-    });
   } catch (err) {
     console.log(err);
   }
