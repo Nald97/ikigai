@@ -4,8 +4,35 @@ import { editProfile } from "../../api/FirestoreAPI";
 import Image from "next/image";
 import avatar from "../../public/avatar.png";
 
+const PERSONAL_NEEDS_KEY = "personalNeeds";
+const PROFESSIONAL_NEEDS_KEY = "professionalNeeds";
+
 export default function ProfileEdit({ onEdit, currentUser }) {
   const [editInputs, setEditInputs] = useState(currentUser);
+
+  function handleAdd(f) {
+    const inps = { ...editInputs };
+    if (inps[f] === undefined) inps[f] = [];
+    inps[f].push("");
+    setEditInputs(inps);
+  }
+
+  function handleRemove(i, f) {
+    const inps = { ...editInputs };
+    if (inps[f] === undefined) return;
+    inps[f].splice(i, 1);
+    setEditInputs(inps);
+  }
+
+  function handleInputChange(event, i, f) {
+    const inps = { ...editInputs };
+    if (inps[f] === undefined) return;
+    inps[f][i] = event.target.value;
+    setEditInputs({
+      ...inps,
+    });
+  }
+
   const getInput = (event) => {
     let { name, value } = event.target;
     let input = { [name]: value };
@@ -78,13 +105,36 @@ export default function ProfileEdit({ onEdit, currentUser }) {
                       </span>
                       <span>Personal Needs</span>
                     </div>
-                    <input
-                      onChange={getInput}
-                      className="common-input"
-                      placeholder="Headline"
-                      value={editInputs.personalNeeds}
-                      name="personalNeeds"
-                    />
+
+                    <button
+                      type="button"
+                      onClick={() => handleAdd(PERSONAL_NEEDS_KEY)}
+                    >
+                      +
+                    </button>
+                    {editInputs.personalNeeds?.map((field, idx) => {
+                      return (
+                        <div key={`-${idx}`}>
+                          <input
+                            onChange={(e) =>
+                              handleInputChange(e, idx, PERSONAL_NEEDS_KEY)
+                            }
+                            className="common-input"
+                            placeholder="personal needs"
+                            value={field}
+                            name={`personalNeeds-${idx}`}
+                          />
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleRemove(idx, PERSONAL_NEEDS_KEY)
+                            }
+                          >
+                            X
+                          </button>
+                        </div>
+                      );
+                    })}
                   </div>
 
                   <div className="bg-gray-100 p-3 hover:shadow w-3/4">
@@ -107,17 +157,35 @@ export default function ProfileEdit({ onEdit, currentUser }) {
                       </span>
                       <span>Professional Needs</span>
                     </div>
-                    <div className="grid grid-cols-1">
-                      <ul className="list-inside space-y-2">
-                        <input
-                          onChange={getInput}
-                          className="common-input"
-                          placeholder="Professional Needs"
-                          name="professionalNeeds"
-                          value={editInputs.professionalNeeds}
-                        />
-                      </ul>
-                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleAdd(PERSONAL_NEEDS_KEY)}
+                    >
+                      +
+                    </button>
+                    {editInputs.professionalNeeds?.map((field, idx) => {
+                      return (
+                        <div key={`-${idx}`}>
+                          <input
+                            onChange={(e) =>
+                              handleInputChange(e, idx, PROFESSIONAL_NEEDS_KEY)
+                            }
+                            className="common-input"
+                            placeholder="Professional Needs"
+                            value={field}
+                            name={`professionalNeeds-${idx}`}
+                          />
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleRemove(idx, PROFESSIONAL_NEEDS_KEY)
+                            }
+                          >
+                            X
+                          </button>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
