@@ -1,74 +1,15 @@
 import React, { useState } from "react";
-import { firestore, auth } from "../../../firebase-config";
-import { collection, updateDoc } from "firebase/firestore";
+import { HiOutlinePencil } from "react-icons/hi";
 
-const PersonalNeedsForm = () => {
-  const [formData, setFormData] = useState({
-    personalNeed1: "",
-    personalNeed2: "",
-    personalNeed3: "",
-  });
-
-  const fieldNames = ["personalNeed1", "personalNeed2", "personalNeed3"];
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value,
-    }));
-    console.log(formData);
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const docRef = await updateDoc(
-        collection(firestore, `users/${auth.currentUser.uid}`),
-        {
-          personalNeeds: formData,
-        }
-      );
-      console.log("Document written with ID: ", docRef.id);
-    } catch (e) {
-      console.error("Error adding document: ", e);
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit}>
-      {fieldNames.map((fieldName) => (
-        <div key={fieldName}>
-          <label htmlFor={fieldName}>{fieldName}</label>
-          <input
-            type="text"
-            id={fieldName}
-            name={fieldName}
-            value={formData[fieldName]}
-            onChange={handleInputChange}
-          />
-        </div>
-      ))}
-      <button type="submit">Submit</button>
-    </form>
-  );
-};
-
-function Button({ onClick }) {
-  return <button onClick={onClick}>Open Form</button>;
-}
-
-const PersonalNeedsCard = (props) => {
-  const personalNeeds = props.personalNeeds;
-  const professionalNeeds = props.professionalNeeds;
-
-  const [isFormOpen, setIsFormOpen] = useState(false);
-
-  const handleOpenForm = () => {
-    setIsFormOpen(true);
-  };
-
+const PersonalNeedsCard = ({ currentUser, onEdit }) => {
   return (
     <div className="bg-white p-3 shadow-sm rounded-sm border-t-4 border-green-400">
+      <div className="flex items-center space-x-2 font-semibold text-green-900 leading-8 text-sm">
+        <HiOutlinePencil onClick={onEdit} />
+        <p>Edit Profile</p>
+      </div>
+
+      <br />
       <div className="text-gray-700">
         <div className="grid md:grid-cols-2 text-sm">
           <div className="bg-gray-100 p-3 hover:shadow w-3/4">
@@ -91,20 +32,13 @@ const PersonalNeedsCard = (props) => {
               </span>
               <span>Personal Needs</span>
             </div>
-            {personalNeeds?.length === 0 ? (
-              <div className="flex justify-center">
-                <Button onClick={handleOpenForm} />
-                {isFormOpen && <PersonalNeedsForm />}
-              </div>
-            ) : (
-              <ul className="list-inside space-y-2">
-                {personalNeeds?.map((personalNeed) => (
-                  <li>
-                    <div className="text-teal-600">{personalNeed}</div>
-                  </li>
-                ))}
-              </ul>
-            )}
+            <ul className="list-inside space-y-2">
+              {currentUser?.personalNeeds?.map((need) => (
+                <li>
+                  <div className="text-teal-600">{need}</div>
+                </li>
+              ))}
+            </ul>
           </div>
 
           <div className="bg-gray-100 p-3 hover:shadow w-3/4">
@@ -129,9 +63,9 @@ const PersonalNeedsCard = (props) => {
             </div>
             <div className="grid grid-cols-1">
               <ul className="list-inside space-y-2">
-                {professionalNeeds?.map((professionalNeed) => (
+                {currentUser?.professionalNeeds?.map((proNeed) => (
                   <li>
-                    <div className="text-teal-600">{professionalNeed}</div>
+                    <div className="text-teal-600">{proNeed}</div>
                   </li>
                 ))}
               </ul>

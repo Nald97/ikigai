@@ -1,10 +1,7 @@
 import React from "react";
 import { Card, Space } from "antd";
 
-const AspirationCard = (props) => {
-  const aspirations = props.aspirations;
-  const passions = props.passions;
-
+const AspirationCard = ({ currentUser }) => {
   return (
     <div className="bg-white p-3 shadow-sm rounded-sm">
       <div className="grid grid-cols-2">
@@ -29,7 +26,7 @@ const AspirationCard = (props) => {
             <span className="tracking-wide">Aspirations</span>
           </div>
           <ul className="list-inside space-y-2">
-            {aspirations?.map((asp) => (
+            {currentUser?.aspirations?.map((asp) => (
               <li>
                 <div className="text-teal-600">{asp}</div>
               </li>
@@ -62,9 +59,9 @@ const AspirationCard = (props) => {
             <span className="tracking-wide">Passions</span>
           </div>
           <ul className="list-inside space-y-2">
-            {passions?.map((pas) => (
+            {currentUser?.passions?.map((pss) => (
               <li>
-                <div className="text-teal-600">{pas}</div>
+                <div className="text-teal-600">{pss}</div>
               </li>
             ))}
           </ul>

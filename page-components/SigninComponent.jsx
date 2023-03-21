@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { LoginAPI } from "../api/AuthAPI";
 import { toast } from "react-toastify";
+import { LockClosedIcon } from "@heroicons/react/20/solid";
 
 const SigninComponent = () => {
   let router = useRouter();
@@ -13,7 +14,7 @@ const SigninComponent = () => {
       toast.success("Login Successful");
 
       localStorage.setItem("userEmail", response.user.email);
-      router.push("/Home");
+      router.push("/Profile");
     } catch (error) {
       console.log(error);
       toast.error("Please check your credentials");
@@ -21,9 +22,32 @@ const SigninComponent = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center mt-20 w-1/3">
-      <h1 className="text-3xl font-bold mb-4 justify-center flex">Sign In</h1>
-
+    <div
+      className="flex flex-col items-center justify-center mt-20"
+      style={{
+        background: "white",
+        marginTop: "150px",
+        marginLeft: "auto",
+        marginRight: "auto",
+        width: "400px",
+        height: "400px",
+        borderRadius: "10px",
+      }}
+    >
+      <h1 className="text-3xl font-bold mb-4 justify-center flex">
+        Sign In To Your Account
+      </h1>
+      <br />
+      <p>
+        Or{" "}
+        <a
+          href="/Signup"
+          style={{ textDecoration: "underline", color: "blue" }}
+        >
+          Sign Up if you don't have an account
+        </a>{" "}
+      </p>
+      <br />
       <div className="mb-4">
         <label className="block text-gray-700 font-bold mb-2" htmlFor="email">
           Email
@@ -35,13 +59,13 @@ const SigninComponent = () => {
           onChange={(event) =>
             setCredentials({ ...credentials, email: event.target.value })
           }
-          placeholder="Email"
+          placeholder=" Email"
         />
       </div>
       <div className="mb-6">
         <label
           className="block text-gray-700 font-bold mb-2"
-          htmlFor="password"
+          htmlFor="Password"
         >
           Password
         </label>
@@ -52,7 +76,7 @@ const SigninComponent = () => {
           onChange={(event) =>
             setCredentials({ ...credentials, password: event.target.value })
           }
-          placeholder="password"
+          placeholder=" Password"
         />
       </div>
       <div className="flex items-center justify-between">

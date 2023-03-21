@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { RegisterAPI } from "../api/AuthAPI";
-import { postUserData } from "../api/FirestoreAPI";
+import { postUserData, checkNameUniqueness } from "../api/FirestoreAPI";
 import { getUniqueID } from "../helper/getUniqueId";
 import { toast } from "react-toastify";
 
@@ -11,12 +11,43 @@ const SignupComponent = () => {
 
   const signup = async () => {
     try {
+      // Check if displayName already exists
+      let isNameUnique = await checkNameUniqueness(credentials.name);
+      if (!isNameUnique) {
+        toast.error("Name already exists");
+        return;
+      }
+
       let res = await RegisterAPI(credentials.email, credentials.password);
       toast.success("Account Created!");
       postUserData({
-        userID: getUniqueID(),
+        userID: res.user.uid,
         name: credentials.name,
         email: credentials.email,
+        avatar: "",
+        socialLinks: {
+          twitter: "",
+          linkedin: "",
+          github: "",
+        },
+        description: "",
+        ikigai: {
+          whatDoYouLove: {
+            interests: [],
+            values: [],
+            hobbies: [],
+          },
+          whatAreYouGoodAt: {
+            skills: [],
+            knowledge: [],
+            expertise: [],
+          },
+          whatTheWorldNeeds: {
+            world: [],
+            community: [],
+            you: [],
+          },
+        },
       });
       router.push("/Home");
       localStorage.setItem("userEmail", res.user.email);
@@ -27,8 +58,20 @@ const SignupComponent = () => {
   };
 
   return (
-    <div className="border-white-500 flex flex-col items-center justify-center mt-20 w-1/3">
+    <div
+      className="flex flex-col items-center justify-center mt-20"
+      style={{
+        background: "white",
+        marginTop: "150px",
+        marginLeft: "auto",
+        marginRight: "auto",
+        width: "400px",
+        height: "400px",
+        borderRadius: "10px",
+      }}
+    >
       <h1 className="text-3xl font-bold mb-4 justify-center flex">Sign Up</h1>
+      <br />
       <div className="mb-4">
         <label
           className="block text-gray-700 font-bold mb-2"
@@ -43,7 +86,7 @@ const SignupComponent = () => {
           onChange={(event) =>
             setCredentials({ ...credentials, name: event.target.value })
           }
-          placeholder="Name or Nickname"
+          placeholder=" Name or Nickname"
         />
       </div>
 
@@ -58,7 +101,7 @@ const SignupComponent = () => {
           onChange={(event) =>
             setCredentials({ ...credentials, email: event.target.value })
           }
-          placeholder="Email"
+          placeholder=" Email"
         />
       </div>
       <div className="mb-6">
@@ -75,7 +118,7 @@ const SignupComponent = () => {
           onChange={(event) =>
             setCredentials({ ...credentials, password: event.target.value })
           }
-          placeholder="password"
+          placeholder=" Password"
         />
       </div>
 

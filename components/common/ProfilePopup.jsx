@@ -23,13 +23,14 @@ export default function ProfilePopup() {
       <Button
         title="View Profile"
         onClick={() =>
-          router.push("/profile", {
+          router.push("/Profile", {
             state: {
               id: currentUser?.id,
             },
           })
         }
       />
+
       <Button title="Log out" onClick={onLogout} />
     </div>
   );

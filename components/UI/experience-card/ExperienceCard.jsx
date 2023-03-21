@@ -1,10 +1,7 @@
 import React from "react";
-import { Card, Space } from "antd";
 
 const ExperienceCard = ({ currentUser }) => {
-  // experience?.map((exp) => {
-  //   console.log(exp);
-  // });
+  console.log(currentUser?.Experience);
 
   return (
     <div className="bg-white p-3  rounded-sm shadow-sm">
@@ -30,11 +27,11 @@ const ExperienceCard = ({ currentUser }) => {
             <span className="tracking-wide">Experience</span>
           </div>
           <ul className="list-inside space-y-2">
-            {/* {experience?.map((exp) => (
+            {currentUser?.Experience?.map((exp) => (
               <li>
-                <div className="text-teal-600">{currentUser?.email}</div>
+                <div className="text-teal-600">{exp}</div>
               </li>
-            ))} */}
+            ))}
           </ul>
         </div>
         <div className="bg-gray-100 p-3 hover:shadow w-3/4">
@@ -62,7 +59,13 @@ const ExperienceCard = ({ currentUser }) => {
             </span>
             <span className="tracking-wide">Education</span>
           </div>
-          <ul className="list-inside space-y-2"></ul>
+          <ul className="list-inside space-y-2">
+            {currentUser?.Education?.map((edu) => (
+              <li>
+                <div className="text-teal-600">{edu}</div>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </div>

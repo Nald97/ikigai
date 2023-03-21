@@ -9,6 +9,7 @@ import {
   where,
   setDoc,
   deleteDoc,
+  getDocs,
   orderBy,
   serverTimestamp,
 } from "firebase/firestore";
@@ -19,6 +20,28 @@ let userRef = collection(firestore, "users");
 let likeRef = collection(firestore, "likes");
 let commentsRef = collection(firestore, "comments");
 let connectionRef = collection(firestore, "connections");
+let ikigaiRef = collection(firestore, "ikigai");
+
+export const checkNameUniqueness = async (name) => {
+  const q = query(userRef, where("name", "==", name));
+  const nameSnapshot = await getDocs(q);
+
+  if (!nameSnapshot.empty) {
+    return false;
+  }
+  return true;
+};
+
+export const getIkigaiElements = async () => {
+  const q = query(ikigaiRef);
+  const ikigaiSnapshot = await getDocs(q);
+  let ikigaiElements = {};
+  ikigaiSnapshot.forEach((doc) => {
+    ikigaiElements[doc.id] = Object.keys(doc.data());
+  });
+  console.log(ikigaiElements);
+  return ikigaiElements;
+};
 
 export const postStatus = (object) => {
   addDoc(postsRef, object)
@@ -74,7 +97,7 @@ export const getSingleUser = (setCurrentUser, email) => {
 };
 
 export const postUserData = (object) => {
-  addDoc(userRef, object)
+  setDoc(doc(firestore, "users", object.userID), object)
     .then(() => {})
     .catch((err) => {
       console.log(err);

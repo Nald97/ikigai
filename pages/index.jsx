@@ -12,7 +12,7 @@ export default function Signin() {
   useEffect(() => {
     onAuthStateChanged(auth, (response) => {
       if (response?.accessToken) {
-        router.push("/Home");
+        router.push("/Profile");
       } else {
         setLoading(false);
       }

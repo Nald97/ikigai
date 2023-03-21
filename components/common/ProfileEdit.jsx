@@ -4,8 +4,14 @@ import { editProfile } from "../../api/FirestoreAPI";
 import Image from "next/image";
 import avatar from "../../public/avatar.png";
 
+
 const PERSONAL_NEEDS_KEY = "personalNeeds";
 const PROFESSIONAL_NEEDS_KEY = "professionalNeeds";
+const EXPERIENCE_KEY = "Experience";
+const EDUCATION_KEY = "Education";
+const SKILLS_KEY = "skills";
+const PASSIONS_KEY = "passions";
+const ASPIRATIONS_KEY = "aspirations";
 
 export default function ProfileEdit({ onEdit, currentUser }) {
   const [editInputs, setEditInputs] = useState(currentUser);
@@ -46,9 +52,11 @@ export default function ProfileEdit({ onEdit, currentUser }) {
 
   return (
     <div className="w-auto h-auto bg-whitesmoke m-30 rounded-md p-20 relative">
-      <div className="edit-icon cursor-pointer p-2 rounded-full hover:bg-gray-300">
-        <AiOutlineClose className="close-icon" onClick={onEdit} size={25} />
-      </div>
+      <AiOutlineClose
+        className="my-2 text-white hover:bg-gray-300 hover:bg-red-700"
+        onClick={onEdit}
+        size={25}
+      />
 
       <div className="container mx-auto my-5 p-5">
         <div className="md:flex no-wrap md:-mx-2 ">
@@ -159,7 +167,7 @@ export default function ProfileEdit({ onEdit, currentUser }) {
                     </div>
                     <button
                       type="button"
-                      onClick={() => handleAdd(PERSONAL_NEEDS_KEY)}
+                      onClick={() => handleAdd(PROFESSIONAL_NEEDS_KEY)}
                     >
                       +
                     </button>
@@ -219,15 +227,33 @@ export default function ProfileEdit({ onEdit, currentUser }) {
                     </span>
                     <span className="tracking-wide">Experience</span>
                   </div>
-                  <ul className="list-inside space-y-2">
-                    <input
-                      onChange={getInput}
-                      className="common-input"
-                      placeholder="Experience"
-                      value={editInputs.experience}
-                      name="experience"
-                    />
-                  </ul>
+                  <button
+                    type="button"
+                    onClick={() => handleAdd(EXPERIENCE_KEY)}
+                  >
+                    +
+                  </button>
+                  {editInputs.Experience?.map((field, idx) => {
+                    return (
+                      <div key={`-${idx}`}>
+                        <input
+                          onChange={(e) =>
+                            handleInputChange(e, idx, EXPERIENCE_KEY)
+                          }
+                          className="common-input"
+                          placeholder="Experience"
+                          value={field}
+                          name={`experience-${idx}`}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemove(idx, EXPERIENCE_KEY)}
+                        >
+                          X
+                        </button>
+                      </div>
+                    );
+                  })}
                 </div>
                 <div className="bg-gray-100 p-3 hover:shadow w-3/4">
                   <div className="flex items-center space-x-2 font-semibold text-gray-900 leading-8 mb-3">
@@ -254,15 +280,33 @@ export default function ProfileEdit({ onEdit, currentUser }) {
                     </span>
                     <span className="tracking-wide">Education</span>
                   </div>
-                  <ul className="list-inside space-y-2">
-                    <input
-                      onChange={getInput}
-                      className="common-input"
-                      placeholder="education"
-                      value={editInputs.education}
-                      name="education"
-                    />
-                  </ul>
+                  <button
+                    type="button"
+                    onClick={() => handleAdd(EDUCATION_KEY)}
+                  >
+                    +
+                  </button>
+                  {editInputs.Education?.map((field, idx) => {
+                    return (
+                      <div key={`-${idx}`}>
+                        <input
+                          onChange={(e) =>
+                            handleInputChange(e, idx, EDUCATION_KEY)
+                          }
+                          className="common-input"
+                          placeholder="Education"
+                          value={field}
+                          name={`education-${idx}`}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemove(idx, EDUCATION_KEY)}
+                        >
+                          X
+                        </button>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -345,9 +389,14 @@ export default function ProfileEdit({ onEdit, currentUser }) {
           </div>
         </div>
       </div>
-      <div className="save-container">
-        <button className="save-btn" onClick={updateProfileData}>
-          Save
+      <div className="flex align-center justify-center">
+        <button
+          className="w-350 h-100 cursor-pointer bg-linkedinBlue2 rounded-full outline-none border-none font-system-ui font-semibold text-black text-lg mt-20 hover:text-white hover:bg-green-700 bg-slate-100"
+          onClick={updateProfileData}
+          style={{ width: "300px", height: "50px" }}
+        >
+          {" "}
+          Save Changes
         </button>
       </div>
     </div>

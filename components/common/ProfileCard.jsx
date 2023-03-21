@@ -30,15 +30,13 @@ function ProfileCard({ onEdit, currentUser }) {
         </div>
 
         <div className="w-full md:w-9/12 mx-2 h-64">
-          <PersonalNeedsCard />
+          <PersonalNeedsCard currentUser={currentUser} onEdit={onEdit} />
+
           <div className="my-4" />
-          <ExperienceCard />
+          <ExperienceCard currentUser={currentUser} />
           <div className="my-4" />
-          <AspirationCard />
-          <HiOutlinePencil
-            className="edit-icon cursor-pointer p-2 rounded-full bg-black hover:bg-gray-900"
-            onClick={onEdit}
-          />
+          <AspirationCard currentUser={currentUser} />
+          <HiOutlinePencil onClick={onEdit} />
         </div>
       </div>
     </div>
