@@ -14,6 +14,8 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { toast } from "react-toastify";
+import { setCurrentUser } from "../store/reducers/authReducer";
+import { useDispatch } from "react-redux";
 
 let postsRef = collection(firestore, "posts");
 let userRef = collection(firestore, "users");
@@ -21,6 +23,7 @@ let likeRef = collection(firestore, "likes");
 let commentsRef = collection(firestore, "comments");
 let connectionRef = collection(firestore, "connections");
 let ikigaiRef = collection(firestore, "ikigai");
+let suggestionsRef = collection(firestore, "suggestions");
 
 export const checkNameUniqueness = async (name) => {
   const q = query(userRef, where("name", "==", name));
@@ -104,21 +107,33 @@ export const postUserData = (object) => {
     });
 };
 
-export const getCurrentUser = (setCurrentUser) => {
+export const getCurrentUser = (dispatch) => {
+  // const dispatch = useDispatch();
   onSnapshot(userRef, (response) => {
-    setCurrentUser(
-      response.docs
-        .map((docs) => {
-          return { ...docs.data(), id: docs.id };
-        })
-        .filter((item) => {
-          return item.email === localStorage.getItem("userEmail");
-        })[0]
-    );
+    const user = response.docs
+      .map((docs) => {
+        return { ...docs.data(), id: docs.id };
+      })
+      .filter((item) => {
+        return item.email === localStorage.getItem("userEmail");
+      })[0];
+    dispatch(setCurrentUser(user));
   });
 };
 
 export const editProfile = (userID, payload) => {
+  let userToEdit = doc(userRef, userID);
+
+  updateDoc(userToEdit, payload)
+    .then(() => {
+      toast.success("Profile has been updated successfully");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+export const addDatatoUser = (userID, payload) => {
   let userToEdit = doc(userRef, userID);
 
   updateDoc(userToEdit, payload)

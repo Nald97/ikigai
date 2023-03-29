@@ -7,6 +7,7 @@ import { HiOutlinePencil } from "react-icons/hi";
 import ExperienceCard from "../UI/experience-card/ExperienceCard";
 import PersonalNeedsCard from "../UI/needs-card/PersonalNeedsCard";
 import AspirationCard from "../UI/aspirations/Aspirations";
+import { useDispatch } from "react-redux";
 
 function ProfileCard({ onEdit, currentUser }) {
   const router = useRouter();
@@ -36,7 +37,6 @@ function ProfileCard({ onEdit, currentUser }) {
           <ExperienceCard currentUser={currentUser} />
           <div className="my-4" />
           <AspirationCard currentUser={currentUser} />
-          <HiOutlinePencil onClick={onEdit} />
         </div>
       </div>
     </div>

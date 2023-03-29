@@ -24,32 +24,8 @@ const SignupComponent = () => {
         userID: res.user.uid,
         name: credentials.name,
         email: credentials.email,
-        avatar: "",
-        socialLinks: {
-          twitter: "",
-          linkedin: "",
-          github: "",
-        },
-        description: "",
-        ikigai: {
-          whatDoYouLove: {
-            interests: [],
-            values: [],
-            hobbies: [],
-          },
-          whatAreYouGoodAt: {
-            skills: [],
-            knowledge: [],
-            expertise: [],
-          },
-          whatTheWorldNeeds: {
-            world: [],
-            community: [],
-            you: [],
-          },
-        },
       });
-      router.push("/Home");
+      router.push("/CharacterCreation");
       localStorage.setItem("userEmail", res.user.email);
     } catch (err) {
       console.log(err);

@@ -1,8 +1,25 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import MultiSelectButtonGroup from "../components/common/MultiselectButtonGroup";
-import { getIkigaiElements } from "../api/FirestoreAPI";
+import {
+  getIkigaiElements,
+  addDatatoUser,
+  getCurrentUser,
+} from "../api/FirestoreAPI";
+import { toast } from "react-toastify";
+import { useRouter } from "next/router";
+import { auth } from "../firebase-config";
+import AvatarForm from "../components/UI/character-creation/AvatarForm";
+import SocialLinksForm from "../components/UI/character-creation/SocialLinksForm";
+import DescriptionForm from "../components/UI/character-creation/DescriptionForm";
+import CompetencesForm from "../components/UI/character-creation/CompetencesForm";
+import NeedsForm from "../components/UI/character-creation/NeedsForm";
+import PreferencesForm from "../components/UI/character-creation/PreferencesForm";
+
+const currentUser = auth.currentUser;
+const userId = currentUser ? currentUser.uid : null;
 
 const CharacterCreation = () => {
+  const router = useRouter();
   const [step, setStep] = useState(1);
   const [avatar, setAvatar] = useState("");
   const [socialLinks, setSocialLinks] = useState({
@@ -49,11 +66,43 @@ const CharacterCreation = () => {
     fetchIkigaiElements();
   }, []);
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (step < 6) {
       setStep(step + 1);
     } else {
-      // Submit the character creation data and redirect to the next page
+      const ikigaiData = {
+        socialLinks,
+        description,
+        ikigai: {
+          what_do_you_love: {
+            interests: selectedInterests,
+            values: selectedValues,
+            hobbies: selectedHobbies,
+          },
+          what_are_you_good_at: {
+            skills: selectedTopSkills,
+            knowledge: selectedKnowledge,
+            expertise: selectedExpertise,
+          },
+          what_the_world_needs: {
+            world: selectedWorldNeeds,
+            community: selectedCommunityNeeds,
+            you: selectedPersonalNeeds,
+          },
+        },
+      };
+
+      if (userId) {
+        try {
+          await addDatatoUser(userId, ikigaiData);
+          router.push("/Profile");
+          toast.success("Data saved successfully");
+        } catch (error) {
+          toast.error(error.message);
+        }
+      } else {
+        toast.error("User not found");
+      }
     }
   };
 
@@ -66,162 +115,99 @@ const CharacterCreation = () => {
   const renderStep = () => {
     switch (step) {
       case 1:
-        return (
-          <div className="flex flex-col items-center">
-            <label className="block text-gray-700 font-bold mb-2">
-              Upload your avatar (optional)
-            </label>
-            <input
-              className="border border-gray-400 p-2 mb-4"
-              type="file"
-              accept="image/*"
-              onChange={(event) => setAvatar(event.target.files[0])}
-            />
-            {avatar && (
-              <img
-                className="w-32 h-32 object-cover mb-4"
-                src={URL.createObjectURL(avatar)}
-                alt="Preview"
-              />
-            )}
-          </div>
-        );
+        return <AvatarForm avatar={avatar} setAvatar={setAvatar} />;
       case 2:
         return (
-          <div>
-            <label className="block text-gray-700 font-bold mb-2">
-              Social Links (optional)
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4"
-              type="text"
-              placeholder="Twitter"
-              value={socialLinks.twitter}
-              onChange={(event) =>
-                setSocialLinks({ ...socialLinks, twitter: event.target.value })
-              }
-            />
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4"
-              type="text"
-              placeholder="LinkedIn"
-              value={socialLinks.linkedin}
-              onChange={(event) =>
-                setSocialLinks({ ...socialLinks, linkedin: event.target.value })
-              }
-            />
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              type="text"
-              placeholder="GitHub"
-              value={socialLinks.github}
-              onChange={(event) =>
-                setSocialLinks({ ...socialLinks, github: event.target.value })
-              }
-            />
-          </div>
+          <SocialLinksForm
+            socialLinks={socialLinks}
+            setSocialLinks={setSocialLinks}
+          />
         );
       case 3:
         return (
-          <div>
-            <label className="block text-gray-700 font-bold mb-2">
-              Describe yourself in one line (optional)
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              type="text"
-              placeholder="Description"
-              value={description}
-              onChange={(event) => setDescription(event.target.value)}
-            />
-          </div>
+          <DescriptionForm
+            description={description}
+            setDescription={setDescription}
+          />
         );
       case 4:
         return (
-          <div>
-            <h2 className="mb-4">What are your interests?</h2>
-            <MultiSelectButtonGroup
-              options={interests}
-              selected={selectedInterests}
-              onSelect={setSelectedInterests}
-            />
-
-            <h2 className="mb-4 mt-6">What are your top skills?</h2>
-            <MultiSelectButtonGroup
-              options={topSkills}
-              selected={selectedTopSkills}
-              onSelect={setSelectedTopSkills}
-            />
-
-            <h2 className="mb-4 mt-6">What are your hobbies?</h2>
-            <MultiSelectButtonGroup
-              options={hobbies}
-              selected={selectedHobbies}
-              onSelect={setSelectedHobbies}
-            />
-
-            <h2 className="mb-4 mt-6">What are your values?</h2>
-            <MultiSelectButtonGroup
-              options={values}
-              selected={selectedValues}
-              onSelect={setSelectedValues}
-            />
-
-            <h2 className="mb-4 mt-6">What do you know?</h2>
-            <MultiSelectButtonGroup
-              options={knowledge}
-              selected={selectedKnowledge}
-              onSelect={setSelectedKnowledge}
-            />
-          </div>
+          <CompetencesForm
+            topSkills={topSkills}
+            selectedTopSkills={selectedTopSkills}
+            setSelectedTopSkills={setSelectedTopSkills}
+            knowledge={knowledge}
+            selectedKnowledge={selectedKnowledge}
+            setSelectedKnowledge={setSelectedKnowledge}
+            expertise={expertise}
+            selectedExpertise={selectedExpertise}
+            setSelectedExpertise={setSelectedExpertise}
+          />
         );
       case 5:
         return (
-          <div>
-            <h2 className="mb-4">What are your areas of expertise?</h2>
-            <MultiSelectButtonGroup
-              options={expertise}
-              selected={selectedExpertise}
-              onSelect={setSelectedExpertise}
-            />
-
-            <h2 className="mb-4 mt-6">What does the world need?</h2>
-            <MultiSelectButtonGroup
-              options={worldNeeds}
-              selected={selectedWorldNeeds}
-              onSelect={setSelectedWorldNeeds}
-            />
-
-            <h2 className="mb-4 mt-6">What does your community need?</h2>
-            <MultiSelectButtonGroup
-              options={communityNeeds}
-              selected={selectedCommunityNeeds}
-              onSelect={setSelectedCommunityNeeds}
-            />
-
-            <h2 className="mb-4 mt-6">What do you need?</h2>
-            <MultiSelectButtonGroup
-              options={personalNeeds}
-              selected={selectedPersonalNeeds}
-              onSelect={setSelectedPersonalNeeds}
-            />
-          </div>
+          <PreferencesForm
+            values={values}
+            selectedValues={selectedValues}
+            setSelectedValues={setSelectedValues}
+            hobbies={hobbies}
+            selectedHobbies={selectedHobbies}
+            setSelectedHobbies={setSelectedHobbies}
+            interests={interests}
+            selectedInterests={selectedInterests}
+            setSelectedInterests={setSelectedInterests}
+          />
+        );
+      case 6:
+        return (
+          <NeedsForm
+            worldNeeds={worldNeeds}
+            selectedWorldNeeds={selectedWorldNeeds}
+            setSelectedWorldNeeds={setSelectedWorldNeeds}
+            communityNeeds={communityNeeds}
+            selectedCommunityNeeds={selectedCommunityNeeds}
+            setSelectedCommunityNeeds={setSelectedCommunityNeeds}
+            personalNeeds={personalNeeds}
+            selectedPersonalNeeds={selectedPersonalNeeds}
+            setSelectedPersonalNeeds={setSelectedPersonalNeeds}
+          />
         );
       default:
         return null;
     }
   };
 
-  console.log(interests, topSkills, hobbies, values, knowledge);
+  console.log(currentUser, userId);
 
   return (
-    <div>
-      <h1>Character Creation - Step {step}</h1>
-      {renderStep()}
-      <button onClick={handleBack} disabled={step === 1}>
-        Back
-      </button>
-      <button onClick={handleNext}>{step === 5 ? "Submit" : "Next"}</button>
+    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+        <div className="p-8">
+          <h1 className="text-2xl font-bold text-center mb-8">
+            Character Creation - Step {step}
+          </h1>
+          {renderStep()}
+          <div className="flex justify-between mt-8">
+            <button
+              className={`py-2 px-4 font-semibold rounded-lg shadow-md text-white ${
+                step === 1
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 focus:outline-none"
+              }`}
+              onClick={handleBack}
+              disabled={step === 1}
+            >
+              Back
+            </button>
+            <button
+              className="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:ring-green-300 focus:outline-none"
+              onClick={handleNext}
+            >
+              {step === 7 ? "Submit" : "Next"}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

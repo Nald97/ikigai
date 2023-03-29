@@ -1,404 +1,123 @@
-import React, { useState } from "react";
-import { AiOutlineClose } from "react-icons/ai";
-import { editProfile } from "../../api/FirestoreAPI";
-import Image from "next/image";
-import avatar from "../../public/avatar.png";
+import React, { useState, useEffect } from "react";
+import MultiSelectButtonGroup from "./MultiselectButtonGroup";
+import {
+  getIkigaiElements,
+  editProfile,
+  getCurrentUser,
+} from "../../api/FirestoreAPI";
+import { toast } from "react-toastify";
+import { useRouter } from "next/router";
+import { auth } from "../../firebase-config";
+import RenderSection from "./RenderSection";
+import { useSelector } from "react-redux";
+import AvatarForm from "../UI/character-creation/AvatarForm";
+import SocialLinksForm from "../UI/character-creation/SocialLinksForm";
+import DescriptionForm from "../UI/character-creation/DescriptionForm";
+import CompetencesEditForm from "../UI/character-edit/CompetencesEditForm";
+import PreferencesEditForm from "../UI/character-edit/PreferencesEditForm";
+import NeedsEditForm from "../UI/character-edit/NeedsEditForm";
 
+const NavigationMenu = ({ onSelect }) => {
+  const menuItems = [
+    "Change Avatar",
+    "Change Social Links",
+    "Change Description",
+    "Change Competences",
+    "Change Preferences",
+    "Change Needs",
+  ];
 
-const PERSONAL_NEEDS_KEY = "personalNeeds";
-const PROFESSIONAL_NEEDS_KEY = "professionalNeeds";
-const EXPERIENCE_KEY = "Experience";
-const EDUCATION_KEY = "Education";
-const SKILLS_KEY = "skills";
-const PASSIONS_KEY = "passions";
-const ASPIRATIONS_KEY = "aspirations";
+  return (
+    <div className="w-1/3 p-4">
+      <ul>
+        {menuItems.map((item, index) => (
+          <li key={index} className="mb-2">
+            <button
+              className="text-blue-500 hover:text-blue-700 focus:outline-none"
+              onClick={() => onSelect(index)}
+            >
+              {item}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
-export default function ProfileEdit({ onEdit, currentUser }) {
-  const [editInputs, setEditInputs] = useState(currentUser);
+const ProfileEdit = () => {
+  const [selectedMenuItem, setSelectedMenuItem] = useState(0);
 
-  function handleAdd(f) {
-    const inps = { ...editInputs };
-    if (inps[f] === undefined) inps[f] = [];
-    inps[f].push("");
-    setEditInputs(inps);
-  }
+  const [ikigaiElements, setIkigaiElements] = useState({});
+  const [preselected, setPreselected] = useState({});
 
-  function handleRemove(i, f) {
-    const inps = { ...editInputs };
-    if (inps[f] === undefined) return;
-    inps[f].splice(i, 1);
-    setEditInputs(inps);
-  }
+  const { currentUser } = useSelector((state) => state.auth);
+  const userId = currentUser ? currentUser.uid : null;
 
-  function handleInputChange(event, i, f) {
-    const inps = { ...editInputs };
-    if (inps[f] === undefined) return;
-    inps[f][i] = event.target.value;
-    setEditInputs({
-      ...inps,
-    });
-  }
+  useEffect(() => {
+    async function fetchedUserData() {
+      if (userId) {
+        const userData = await getCurrentUser(userId);
+        setPreselected(userData?.ikigai);
+      }
+    }
+    fetchedUserData();
 
-  const getInput = (event) => {
-    let { name, value } = event.target;
-    let input = { [name]: value };
-    setEditInputs({ ...editInputs, ...input });
-  };
+    async function fetchIkigaiElements() {
+      const fetchedIkigaiElements = await getIkigaiElements();
+      setIkigaiElements(fetchedIkigaiElements);
+    }
+    fetchIkigaiElements();
+  }, [userId]);
 
-  const updateProfileData = async () => {
-    await editProfile(currentUser?.id, editInputs);
-    await onEdit();
+  const renderEditComponent = () => {
+    if (!currentUser || !ikigaiElements) {
+      return null;
+    }
+
+    switch (selectedMenuItem) {
+      case 0:
+        return <AvatarForm />;
+      case 1:
+        return <SocialLinksForm />;
+      case 2:
+        return <DescriptionForm />;
+      case 3:
+        return (
+          <CompetencesEditForm
+            userIkigai={preselected}
+            ikigaiElements={ikigaiElements}
+          />
+        );
+      case 4:
+        return (
+          <PreferencesEditForm
+            userIkigai={preselected}
+            ikigaiElements={ikigaiElements}
+          />
+        );
+      case 5:
+        return (
+          <NeedsEditForm
+            userIkigai={preselected}
+            ikigaiElements={ikigaiElements}
+          />
+        );
+      default:
+        return null;
+    }
   };
 
   return (
-    <div className="w-auto h-auto bg-whitesmoke m-30 rounded-md p-20 relative">
-      <AiOutlineClose
-        className="my-2 text-white hover:bg-gray-300 hover:bg-red-700"
-        onClick={onEdit}
-        size={25}
-      />
-
-      <div className="container mx-auto my-5 p-5">
-        <div className="md:flex no-wrap md:-mx-2 ">
-          <div className="w-full md:w-3/12 md:mx-2">
-            {/* ***************************************************************** */}
-            {/* ***************************************************************** */}
-            {/* ***************************************************************** */}
-
-            <div className="bg-white p-3 border-t-4 border-green-400">
-              <div className="image overflow-hidden">
-                <Image className="h-auto w-full mx-auto" src={avatar} alt="" />
-              </div>
-              <h1 className="text-gray-900 font-bold text-xl leading-8 my-1">
-                <input
-                  onChange={getInput}
-                  className="common-input"
-                  placeholder="Name"
-                  name="name"
-                  value={editInputs.name}
-                />
-              </h1>
-              <p className="text-sm text-gray-500 hover:text-gray-600 leading-6"></p>
-            </div>
-            {/* ***************************************************************** */}
-            {/* ***************************************************************** */}
-            {/* ***************************************************************** */}
-            <div className="my-4"></div>
-            {/* ***************************************************************** */}
-            {/* ***************************************************************** */}
-            {/* ***************************************************************** */}
-          </div>
-
-          <div class="w-full md:w-9/12 mx-2 h-64">
-            <div className="bg-white p-3 shadow-sm rounded-sm border-t-4 border-green-400">
-              <div className="text-gray-700">
-                <div className="grid md:grid-cols-2 text-sm">
-                  <div className="bg-gray-100 p-3 hover:shadow w-3/4">
-                    <div className="flex items-center space-x-3 font-semibold text-gray-900 text-xl leading-8">
-                      <span className="text-green-500">
-                        <svg
-                          className="h-5 fill-current"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                          />
-                        </svg>
-                      </span>
-                      <span>Personal Needs</span>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => handleAdd(PERSONAL_NEEDS_KEY)}
-                    >
-                      +
-                    </button>
-                    {editInputs.personalNeeds?.map((field, idx) => {
-                      return (
-                        <div key={`-${idx}`}>
-                          <input
-                            onChange={(e) =>
-                              handleInputChange(e, idx, PERSONAL_NEEDS_KEY)
-                            }
-                            className="common-input"
-                            placeholder="personal needs"
-                            value={field}
-                            name={`personalNeeds-${idx}`}
-                          />
-                          <button
-                            type="button"
-                            onClick={() =>
-                              handleRemove(idx, PERSONAL_NEEDS_KEY)
-                            }
-                          >
-                            X
-                          </button>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  <div className="bg-gray-100 p-3 hover:shadow w-3/4">
-                    <div className="flex items-center space-x-3 font-semibold text-gray-900 text-xl leading-8">
-                      <span className="text-green-500">
-                        <svg
-                          className="h-5 fill-current"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                          />
-                        </svg>
-                      </span>
-                      <span>Professional Needs</span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => handleAdd(PROFESSIONAL_NEEDS_KEY)}
-                    >
-                      +
-                    </button>
-                    {editInputs.professionalNeeds?.map((field, idx) => {
-                      return (
-                        <div key={`-${idx}`}>
-                          <input
-                            onChange={(e) =>
-                              handleInputChange(e, idx, PROFESSIONAL_NEEDS_KEY)
-                            }
-                            className="common-input"
-                            placeholder="Professional Needs"
-                            value={field}
-                            name={`professionalNeeds-${idx}`}
-                          />
-                          <button
-                            type="button"
-                            onClick={() =>
-                              handleRemove(idx, PROFESSIONAL_NEEDS_KEY)
-                            }
-                          >
-                            X
-                          </button>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* ***************************************************************** */}
-            {/* ***************************************************************** */}
-            <div className="my-4"></div>
-            {/* ***************************************************************** */}
-            {/* ***************************************************************** */}
-            {/* ***************************************************************** */}
-            <div className="bg-white p-3  rounded-sm shadow-sm">
-              <div className="grid grid-cols-2">
-                <div className="bg-gray-100 p-3 hover:shadow w-3/4">
-                  <div className="flex items-center space-x-2 font-semibold text-gray-900 leading-8 mb-3">
-                    <span className="text-green-500">
-                      <svg
-                        className="h-5"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                        />
-                      </svg>
-                    </span>
-                    <span className="tracking-wide">Experience</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => handleAdd(EXPERIENCE_KEY)}
-                  >
-                    +
-                  </button>
-                  {editInputs.Experience?.map((field, idx) => {
-                    return (
-                      <div key={`-${idx}`}>
-                        <input
-                          onChange={(e) =>
-                            handleInputChange(e, idx, EXPERIENCE_KEY)
-                          }
-                          className="common-input"
-                          placeholder="Experience"
-                          value={field}
-                          name={`experience-${idx}`}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => handleRemove(idx, EXPERIENCE_KEY)}
-                        >
-                          X
-                        </button>
-                      </div>
-                    );
-                  })}
-                </div>
-                <div className="bg-gray-100 p-3 hover:shadow w-3/4">
-                  <div className="flex items-center space-x-2 font-semibold text-gray-900 leading-8 mb-3">
-                    <span className="text-green-500">
-                      <svg
-                        className="h-5"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path fill="#fff" d="M12 14l9-5-9-5-9 5 9 5z" />
-                        <path
-                          fill="#fff"
-                          d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"
-                        />
-                      </svg>
-                    </span>
-                    <span className="tracking-wide">Education</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => handleAdd(EDUCATION_KEY)}
-                  >
-                    +
-                  </button>
-                  {editInputs.Education?.map((field, idx) => {
-                    return (
-                      <div key={`-${idx}`}>
-                        <input
-                          onChange={(e) =>
-                            handleInputChange(e, idx, EDUCATION_KEY)
-                          }
-                          className="common-input"
-                          placeholder="Education"
-                          value={field}
-                          name={`education-${idx}`}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => handleRemove(idx, EDUCATION_KEY)}
-                        >
-                          X
-                        </button>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-            {/* ***************************************************************** */}
-            {/* ***************************************************************** */}
-            <div className="my-4"></div>
-            {/* ***************************************************************** */}
-            {/* ***************************************************************** */}
-            {/* ***************************************************************** */}
-
-            <div className="bg-white p-3 shadow-sm rounded-sm">
-              <div className="grid grid-cols-2">
-                <div className="bg-gray-100 p-3 hover:shadow w-3/4">
-                  <div className="flex items-center space-x-2 font-semibold text-gray-900 leading-8 mb-3">
-                    <span className="text-green-500">
-                      <svg
-                        className="h-5"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                        />
-                      </svg>
-                    </span>
-                    <span className="tracking-wide">Aspirations</span>
-                  </div>
-                  <ul className="list-inside space-y-2">
-                    <input
-                      onChange={getInput}
-                      className="common-input"
-                      placeholder="Aspirations"
-                      value={editInputs.aspirations}
-                      name="aspirations"
-                    />
-                  </ul>
-                </div>
-                <div className="bg-gray-100 p-3 hover:shadow w-3/4">
-                  <div className="flex items-center space-x-2 font-semibold text-gray-900 leading-8 mb-3">
-                    <span className="text-green-500">
-                      <svg
-                        className="h-5"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path fill="#fff" d="M12 14l9-5-9-5-9 5 9 5z" />
-                        <path
-                          fill="#fff"
-                          d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"
-                        />
-                      </svg>
-                    </span>
-                    <span className="tracking-wide">Passions</span>
-                  </div>
-                  <ul className="list-inside space-y-2">
-                    <input
-                      onChange={getInput}
-                      className="common-input"
-                      placeholder="Passions"
-                      value={editInputs.passions}
-                      name="passions"
-                    />
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
+    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+        <div className="flex">
+          <NavigationMenu onSelect={setSelectedMenuItem} />
+          <div className="w-2/3 p-4">{renderEditComponent()}</div>
         </div>
-      </div>
-      <div className="flex align-center justify-center">
-        <button
-          className="w-350 h-100 cursor-pointer bg-linkedinBlue2 rounded-full outline-none border-none font-system-ui font-semibold text-black text-lg mt-20 hover:text-white hover:bg-green-700 bg-slate-100"
-          onClick={updateProfileData}
-          style={{ width: "300px", height: "50px" }}
-        >
-          {" "}
-          Save Changes
-        </button>
       </div>
     </div>
   );
-}
+};
+
+export default ProfileEdit;

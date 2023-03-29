@@ -5,16 +5,17 @@ import { auth } from "../firebase-config";
 import Loader from "../components/common/Loader";
 import { getCurrentUser } from "../api/FirestoreAPI";
 import { useRouter } from "next/router";
+import { useSelector, useDispatch } from "react-redux";
+
+import { setCurrentUser } from "../store/reducers/authReducer";
 
 const Profile = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
 
-  const [currentUser, setCurrentUser] = useState({});
+  const dispatch = useDispatch();
 
-  useMemo(() => {
-    getCurrentUser(setCurrentUser);
-  }, []);
+  const { currentUser } = useSelector((state) => state.auth);
 
   useEffect(() => {
     onAuthStateChanged(auth, (response) => {
@@ -22,9 +23,10 @@ const Profile = () => {
         router.push("/");
       } else {
         setLoading(false);
+        getCurrentUser(dispatch);
       }
     });
-  }, []);
+  }, [router, dispatch]);
   console.log(currentUser?.name);
 
   return loading ? <Loader /> : <ProfileComponent currentUser={currentUser} />;

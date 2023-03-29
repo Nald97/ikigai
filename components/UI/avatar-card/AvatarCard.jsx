@@ -14,7 +14,7 @@ const AvatarCard = ({ currentUser }) => {
         {currentUser?.name}
       </h1>
 
-      <p className="text-sm text-gray-500 hover:text-gray-600 leading-6">{currentUser.bio}</p>
+      <p className="text-sm text-gray-500 hover:text-gray-600 leading-6"></p>
     </div>
   );
 };

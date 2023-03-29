@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const MultiSelectButtonGroup = ({ options, selected, onSelect }) => {
   const toggleSelection = (option) => {
@@ -11,13 +11,13 @@ const MultiSelectButtonGroup = ({ options, selected, onSelect }) => {
 
   return (
     <div className="flex flex-wrap">
-      {options.map((option) => (
+      {options?.map((option) => (
         <button
           key={option}
           className={`m-1 py-2 px-4 border border-gray-300 rounded ${
             selected.includes(option)
-              ? 'bg-blue-500 text-white'
-              : 'bg-white text-gray-700'
+              ? "bg-blue-500 text-white"
+              : "bg-white text-gray-700"
           }`}
           onClick={() => toggleSelection(option)}
         >

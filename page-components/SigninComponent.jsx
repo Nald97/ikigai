@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { LoginAPI } from "../api/AuthAPI";
 import { toast } from "react-toastify";
-import { LockClosedIcon } from "@heroicons/react/20/solid";
 
 const SigninComponent = () => {
   let router = useRouter();
