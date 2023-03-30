@@ -10,7 +10,7 @@ const IkigaiCard = ({ title, cardElements }) => {
       <ul className="list-inside space-y-2">
         {cardElements.map((cardElement) => (
           <li>
-            <div className="text-teal-600">{cardElements}</div>
+            <div className="text-teal-600">{cardElement}</div>
           </li>
         ))}
       </ul>

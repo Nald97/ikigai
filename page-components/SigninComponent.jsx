@@ -2,9 +2,12 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { LoginAPI } from "../api/AuthAPI";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { setUserLoginStatus } from "../store/reducers/authReducer";
 
 const SigninComponent = () => {
   let router = useRouter();
+  const dispatch = useDispatch();
   const [credentials, setCredentials] = useState({});
 
   const login = async () => {
@@ -13,6 +16,7 @@ const SigninComponent = () => {
       toast.success("Login Successful");
 
       localStorage.setItem("userEmail", response.user.email);
+      dispatch(setUserLoginStatus(true));
       router.push("/Profile");
     } catch (error) {
       console.log(error);

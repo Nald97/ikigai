@@ -3,18 +3,18 @@ import {
   getIkigaiElements,
   editProfile,
   getCurrentUser,
-} from "../../api/FirestoreAPI";
+} from "../api/FirestoreAPI";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
-import { auth } from "../../firebase-config";
+import { auth } from "../firebase-config";
 import { useSelector, useDispatch } from "react-redux";
-import AvatarForm from "../UI/character-creation/AvatarForm";
-import SocialLinksForm from "../UI/character-creation/SocialLinksForm";
-import DescriptionForm from "../UI/character-creation/DescriptionForm";
-import CompetencesEditForm from "../UI/character-edit/CompetencesEditForm";
-import PreferencesEditForm from "../UI/character-edit/PreferencesEditForm";
-import NeedsEditForm from "../UI/character-edit/NeedsEditForm";
-import { setCurrentUser } from "../../store/reducers/authReducer";
+import AvatarForm from "../components/UI/character-creation/AvatarForm";
+import SocialLinksForm from "../components/UI/character-creation/SocialLinksForm";
+import DescriptionForm from "../components/UI/character-creation/DescriptionForm";
+import CompetencesEditForm from "../components/UI/character-edit/CompetencesEditForm";
+import PreferencesEditForm from "../components/UI/character-edit/PreferencesEditForm";
+import NeedsEditForm from "../components/UI/character-edit/NeedsEditForm";
+import { setCurrentUser } from "../store/reducers/authReducer";
 
 const NavigationMenu = ({ onSelect }) => {
   const menuItems = [
@@ -55,7 +55,7 @@ const NavigationMenu = ({ onSelect }) => {
   );
 };
 
-const ProfileEdit = () => {
+const Account = () => {
   const [selectedMenuItem, setSelectedMenuItem] = useState(0);
   const [ikigaiElements, setIkigaiElements] = useState({});
   const [userIkigai, setUserIkigai] = useState(null);
@@ -135,4 +135,4 @@ const ProfileEdit = () => {
   );
 };
 
-export default ProfileEdit;
+export default Account;

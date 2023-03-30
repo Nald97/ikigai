@@ -16,8 +16,8 @@ const MultiSelectButtonGroup = ({ options, selected, onSelect }) => {
           key={option}
           className={`m-1 py-2 px-4 border border-gray-300 rounded ${
             selected.includes(option)
-              ? "bg-blue-500 text-white"
-              : "bg-white text-gray-700"
+              ? "bg-gray-800 text-white font-semibold"
+              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
           }`}
           onClick={() => toggleSelection(option)}
         >

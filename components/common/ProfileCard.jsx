@@ -26,8 +26,6 @@ function ProfileCard({ onEdit, currentUser }) {
       <div className="md:flex no-wrap md:-mx-2 ">
         <div className="w-full md:w-3/12 md:mx-2">
           <AvatarCard currentUser={currentUser} />
-          <div className="my-4" />
-          <SkillsCard />
         </div>
 
         <div className="w-full md:w-9/12 mx-2 h-64">

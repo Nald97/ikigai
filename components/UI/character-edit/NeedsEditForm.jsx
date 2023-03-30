@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import RenderSection from "../../common/RenderSection";
+import { editProfile } from "../../../api/FirestoreAPI";
 
-const NeedsEditForm = ({ ikigaiElements, userIkigai }) => {
+const NeedsEditForm = ({ ikigaiElements, userIkigai, userId }) => {
   const [selectedWorldNeeds, setSelectedWorldNeeds] = useState([]);
   const [selectedCommunityNeeds, setSelectedCommunityNeeds] = useState([]);
   const [selectedPersonalNeeds, setSelectedPersonalNeeds] = useState([]);
@@ -21,6 +22,20 @@ const NeedsEditForm = ({ ikigaiElements, userIkigai }) => {
     setSelectedPersonalNeeds,
   ]);
 
+  const handleSaveChanges = () => {
+    const updatedData = {
+      ikigai: {
+        ...userIkigai,
+        what_the_world_needs: {
+          world: selectedWorldNeeds,
+          community: selectedCommunityNeeds,
+          you: selectedPersonalNeeds,
+        },
+      },
+    };
+
+    editProfile(userId, updatedData);
+  };
   return (
     <div>
       <RenderSection
@@ -41,6 +56,14 @@ const NeedsEditForm = ({ ikigaiElements, userIkigai }) => {
         selected={selectedPersonalNeeds}
         onSelect={setSelectedPersonalNeeds}
       />
+      <div className="mt-6">
+        <button
+          className="bg-gray-800 text-white font-semibold px-6 py-2 rounded shadow-md hover:bg-gray-700 focus:outline-none"
+          onClick={handleSaveChanges}
+        >
+          Save Changes
+        </button>
+      </div>
     </div>
   );
 };
