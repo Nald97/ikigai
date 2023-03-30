@@ -9,8 +9,8 @@ import { useRouter } from "next/router";
 import { auth } from "../firebase-config";
 import { useSelector, useDispatch } from "react-redux";
 import AvatarForm from "../components/UI/character-creation/AvatarForm";
-import SocialLinksForm from "../components/UI/character-creation/SocialLinksForm";
-import DescriptionForm from "../components/UI/character-creation/DescriptionForm";
+import SocialLinksEditForm from "../components/UI/character-edit/SocialLinksEditForm";
+import DescriptionEditForm from "../components/UI/character-edit/DescriptionEditForm";
 import CompetencesEditForm from "../components/UI/character-edit/CompetencesEditForm";
 import PreferencesEditForm from "../components/UI/character-edit/PreferencesEditForm";
 import NeedsEditForm from "../components/UI/character-edit/NeedsEditForm";
@@ -89,9 +89,19 @@ const Account = () => {
       case 0:
         return <AvatarForm />;
       case 1:
-        return <SocialLinksForm />;
+        return (
+          <SocialLinksEditForm
+            userSocialLinks={currentUser.socialLinks}
+            userId={userId}
+          />
+        );
       case 2:
-        return <DescriptionForm />;
+        return (
+          <DescriptionEditForm
+            userDescription={currentUser.description}
+            userId={userId}
+          />
+        );
       case 3:
         return (
           <CompetencesEditForm

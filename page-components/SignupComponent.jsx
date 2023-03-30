@@ -4,10 +4,13 @@ import { RegisterAPI } from "../api/AuthAPI";
 import { postUserData, checkNameUniqueness } from "../api/FirestoreAPI";
 import { getUniqueID } from "../helper/getUniqueId";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { setUserLoginStatus } from "../store/reducers/authReducer";
 
 const SignupComponent = () => {
   const router = useRouter();
   const [credentials, setCredentials] = useState({});
+  const dispatch = useDispatch();
 
   const signup = async () => {
     try {
@@ -25,6 +28,8 @@ const SignupComponent = () => {
         name: credentials.name,
         email: credentials.email,
       });
+
+      dispatch(setUserLoginStatus(true));
       router.push("/CharacterCreation");
       localStorage.setItem("userEmail", res.user.email);
     } catch (err) {
