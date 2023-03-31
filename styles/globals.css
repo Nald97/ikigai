@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+header {
+  background-color: #000;
+  color: #fff;
+  padding: 10px;
+  text-align: center;
+}
+
 body {
   background-image: url("../public/background.png");
   background-size: auto;

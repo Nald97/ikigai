@@ -5,19 +5,13 @@ import { Col, Row } from "antd";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import { CardActionArea } from "@mui/material";
-import useCtaData from "../../hooks/getCtaData";
 import Image from "next/image";
 import Link from "next/link";
 import EditDeleteOptions from "../../components/UI/edit-delete-option/EditDeleteOptions";
-import useDeleteCtaData from "../../hooks/deleteCtaData";
-import EditCtaForm from "../../components/form/EditForm";
 
 const Ctas = ({ onEditFormOpen }) => {
   const [showOptionIndex, setShowOptionIndex] = useState(null);
   const [editIndex, setEditIndex] = useState(null);
-  const { ctaData } = useCtaData();
-  const { deleteData } = useDeleteCtaData();
 
   const handleToggleOptions = (index) => {
     setShowOptionIndex(index === showOptionIndex ? null : index);
@@ -41,7 +35,6 @@ const Ctas = ({ onEditFormOpen }) => {
 
   return (
     <div>
-     
       <Row gutter={[16, 16]} style={{ marginTop: "3rem", marginLeft: "3rem" }}>
         {ctaData?.map((cta, index) => {
           console.log("cta", cta);

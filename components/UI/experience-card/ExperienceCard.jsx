@@ -1,36 +1,26 @@
 import React from "react";
-import { Card, Space } from "antd";
-import useSheetData from "../../../hooks/getSheetData";
+import IkigaiCard from "../../common/IkigaiCard";
 
-const ExperienceCard = (props) => {
-  const experience = props.experience;
-
-  // Split the experience string at each comma and map over the resulting array
-  const experienceList = experience?.split(",").map((experience, index) => {
-    // Trim any leading or trailing whitespace from the experience
-    const trimmedExperience = experience.trim();
-    // Create a new p element for each experience
-    return <p key={index}>{trimmedExperience}</p>;
-  });
-
+const ExperienceCard = ({ currentUser }) => {
   return (
-    <Space direction="vertical" size={16}>
-      <Card
-        title="Experience"
-        color="white !important"
-        style={{
-          width: 250,
-          height: "auto",
-          background: "rgb(31, 48, 63)",
-          opacity: 0.9,
-          top: 48,
-          left: -100,
-          font: "#ffffff",
-        }}
-      >
-        <div style={{ color: "white" }}>{experienceList}</div>
-      </Card>
-    </Space>
+    <div className="bg-white p-3 shadow-sm rounded-sm border-t-4 border-green-400">
+      <div className="text-gray-700">
+        <div className="grid grid-cols-3 gap-4 text-sm">
+          <IkigaiCard
+            title="Your Expertise"
+            cardElements={currentUser?.ikigai?.what_are_you_good_at?.expertise || []}
+          />
+          <IkigaiCard
+            title="Your Knowledge"
+            cardElements={currentUser?.ikigai?.what_are_you_good_at?.knowledge || []}
+          />
+          <IkigaiCard
+            title="Your Skills"
+            cardElements={currentUser?.ikigai?.what_are_you_good_at?.skills || []}
+          />
+        </div>
+      </div>
+    </div>
   );
 };
 

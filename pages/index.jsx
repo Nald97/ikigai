@@ -1,25 +1,22 @@
-import { useEffect } from "react";
-import Head from "next/head";
-import Image from "next/image";
-import AvatarCard from "../components/UI/avatar-card/AvatarCard";
-import SkillsCard from "../components/UI/skills-card/SkillsCard";
-import BioCard from "../components/UI/bio-card/BioCard";
-import ExperienceCard from "../components/UI/experience-card/ExperienceCard";
-import PassionsCard from "../components/UI/passions-card/PassionsCard";
-import useSheetData from "../hooks/getSheetData"
-import Link from "next/link";
+import React, { useState, useEffect } from "react";
+import SigninComponent from "../page-components/SigninComponent";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase-config";
+import { useRouter } from "next/router";
+import Loader from "../components/common/Loader";
 
+export default function Signin() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
 
-
-const HomePage = () => {
-  
-  
-
-  return (
-    <div>
-      
-    </div>
-  );
-};
-
-export default HomePage;
+  useEffect(() => {
+    onAuthStateChanged(auth, (response) => {
+      if (response?.accessToken) {
+        router.push("/Profile");
+      } else {
+        setLoading(false);
+      }
+    });
+  }, []);
+  return loading ? <Loader /> : <SigninComponent />;
+}

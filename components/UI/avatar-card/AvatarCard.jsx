@@ -1,48 +1,62 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import Image from "next/image";
-import {
-  EditOutlined,
-  EllipsisOutlined,
-  SettingOutlined,
-} from "@ant-design/icons";
-import { Avatar, Card } from "antd";
-import { color, positions } from "@mui/system";
 import avatar from "../../../public/avatar.png";
+import { HiOutlineMail } from "react-icons/hi";
+import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
+import Link from "next/link";
 
-const { Meta } = Card;
-
-const AvatarCard = (props) => {
-  const name = props.name;
+const AvatarCard = () => {
+  // Access currentUser from the Redux store
+  const currentUser = useSelector((state) => state.auth.currentUser);
 
   return (
-    <Card
-      style={{
-        width: 250,
-        height: 250,
-        opacity: 0.9,
-        top: 125,
-        left: 125,
-        color: "white",
-        background: "black",
-      }}
-      ant-card-meta-title-color="white"
-      cover={
-        <div>
-          {/* <Meta style={{ margin: "50px"}} title="Card title"  /> */}
-          <h1
-            style={{
-              margin: "50px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
+    <div className="bg-white p-3 border-t-4 border-green-400">
+      <div className="image overflow-hidden">
+        <Image className="h-auto w-full mx-auto" src={avatar} alt="" />
+      </div>
+      <h1 className="text-gray-900 font-bold text-xl leading-8 my-1">
+        {currentUser?.name}
+      </h1>
+      <p className="text-sm text-gray-500 hover:text-gray-600 leading-6">
+        {currentUser?.description}
+      </p>
+      <div className="flex items-center space-x-2 mt-2">
+        <HiOutlineMail className="text-gray-500" />
+        <p className="text-sm text-gray-500 hover:text-gray-600 leading-6">
+          {currentUser?.email}
+        </p>
+      </div>
+      <div className="flex items-center space-x-4 mt-2">
+        {currentUser?.socialLinks?.github && (
+          <Link
+            href={currentUser.socialLinks.github}
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            {name}
-          </h1>
-          <Image alt="example" src={avatar} />
-        </div>
-      }
-    ></Card>
+            <FaGithub className="text-gray-500 hover:text-gray-600" />
+          </Link>
+        )}
+        {currentUser?.socialLinks?.twitter && (
+          <Link
+            href={currentUser.socialLinks.twitter}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaTwitter className="text-gray-500 hover:text-gray-600" />
+          </Link>
+        )}
+        {currentUser?.socialLinks?.linkedin && (
+          <Link
+            href={currentUser.socialLinks.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaLinkedin className="text-gray-500 hover:text-gray-600" />
+          </Link>
+        )}
+      </div>
+    </div>
   );
 };
 
