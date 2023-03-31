@@ -46,6 +46,22 @@ export const getIkigaiElements = async () => {
   return ikigaiElements;
 };
 
+export const getIkigaiSuggestions = async () => {
+  const q = query(suggestionsRef);
+  const suggestionsSnapshot = await getDocs(q);
+  let suggestions = {};
+
+  // Assuming there is only one document
+  const doc = suggestionsSnapshot.docs[0];
+
+  if (doc) {
+    suggestions = doc.data();
+  }
+
+  console.log(suggestions);
+  return suggestions;
+};
+
 export const postStatus = (object) => {
   addDoc(postsRef, object)
     .then(() => {

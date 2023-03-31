@@ -12,7 +12,7 @@ const HomePage = ({ currentUser }) => {
   useEffect(() => {
     onAuthStateChanged(auth, (response) => {
       if (!response?.accessToken) {
-        router.push("/");
+        router.push("/Home");
       } else {
         setLoading(false);
       }

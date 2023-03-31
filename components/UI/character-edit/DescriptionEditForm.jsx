@@ -23,16 +23,15 @@ const DescriptionEditForm = ({ userDescription, userId }) => {
       <label className="block text-gray-700 font-bold text-lg">
         Describe yourself in one line (optional)
       </label>
-      <input
-        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        type="text"
+      <textarea
+        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline resize-none h-20"
         placeholder="Description"
         value={description}
         onChange={(event) => setDescription(event.target.value)}
-      />
+      ></textarea>
       <div className="mt-6">
         <button
-          className="bg-gray-800 text-white font-semibold px-6 py-2 rounded shadow-md hover:bg-gray-700 focus:outline-none"
+          className="bg-green-600 text-white font-semibold px-6 py-2 rounded shadow-md hover:bg-gray-700 focus:outline-none"
           onClick={handleSaveChanges}
         >
           Save Changes

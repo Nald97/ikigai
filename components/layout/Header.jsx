@@ -7,6 +7,7 @@ import { AiOutlineHome, AiOutlineUserSwitch } from "react-icons/ai";
 import { BsBriefcase } from "react-icons/bs";
 import React, { useEffect, useState } from "react";
 import DropdownMenu from "../UI/DropdownMenu";
+import Link from "next/link";
 
 const Header = () => {
   const router = useRouter();
@@ -23,7 +24,12 @@ const Header = () => {
     <header className="flex w-full items-center justify-between bg-gray-900 py-4 px-4">
       <div className="flex items-center">
         <div className="mr-2">
-          <Image src={logo} alt="logo" className="w-10 h-10" />
+          <Image
+            src={logo}
+            alt="logo"
+            className="w-10 h-10"
+            onClick={() => router.push("/Home")}
+          />
         </div>
         <div>
           <h1 className="text-2xl font-bold text-white">| littlefish</h1>
@@ -39,7 +45,7 @@ const Header = () => {
                   size={30}
                   color="white"
                   className="cursor-pointer hover:text-gray-400 transition-colors duration-200"
-                  onClick={() => router.push("/")}
+                  onClick={() => router.push("/Home")}
                 />
               </li>
               <li>

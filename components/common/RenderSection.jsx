@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MultiSelectButtonGroup from "./MultiSelectButtonGroup";
 
 const RenderSection = ({ title, options, selected, onSelect }) => {
@@ -11,7 +11,7 @@ const RenderSection = ({ title, options, selected, onSelect }) => {
 
   return (
     <div className="my-6">
-      <h2 className="mb-4 text-lg font-bold text-black-700">{title}</h2>
+      <h2 className="mb-4 text-xl font-bold text-black-700">{title}</h2>
       <MultiSelectButtonGroup
         options={options}
         selected={selected}
@@ -35,5 +35,3 @@ const RenderSection = ({ title, options, selected, onSelect }) => {
 };
 
 export default RenderSection;
-
-

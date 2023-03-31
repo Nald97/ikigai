@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from "react";
-import {
-  getIkigaiElements,
-  editProfile,
-  getCurrentUser,
-} from "../api/FirestoreAPI";
-import { toast } from "react-toastify";
-import { useRouter } from "next/router";
-import { auth } from "../firebase-config";
+import { getIkigaiElements } from "../api/FirestoreAPI";
+
 import { useSelector, useDispatch } from "react-redux";
 import AvatarForm from "../components/UI/character-creation/AvatarForm";
 import SocialLinksEditForm from "../components/UI/character-edit/SocialLinksEditForm";
@@ -14,7 +8,6 @@ import DescriptionEditForm from "../components/UI/character-edit/DescriptionEdit
 import CompetencesEditForm from "../components/UI/character-edit/CompetencesEditForm";
 import PreferencesEditForm from "../components/UI/character-edit/PreferencesEditForm";
 import NeedsEditForm from "../components/UI/character-edit/NeedsEditForm";
-import { setCurrentUser } from "../store/reducers/authReducer";
 
 const NavigationMenu = ({ onSelect }) => {
   const menuItems = [
@@ -34,23 +27,20 @@ const NavigationMenu = ({ onSelect }) => {
   };
 
   return (
-    <div className="w-full p-4 bg-gray-200 shadow-inner mb-4">
-      <ul className="flex space-x-4">
-        {menuItems.map((item, index) => (
-          <li key={index}>
-            <button
-              className={`px-4 py-2 focus:outline-none ${
-                index === activeIndex
-                  ? "bg-gray-800 text-white font-semibold"
-                  : "text-gray-700 hover:text-gray-900"
-              }`}
-              onClick={() => handleSelect(index)}
-            >
-              {item}
-            </button>
-          </li>
-        ))}
-      </ul>
+    <div className="flex flex-col space-y-4">
+      {menuItems.map((item, index) => (
+        <button
+          key={index}
+          className={`w-full text-left px-4 py-2 focus:outline-none ${
+            index === activeIndex
+              ? "bg-blue-600 text-white font-semibold"
+              : "text-gray-700 hover:text-gray-900 hover:bg-gray-200"
+          }`}
+          onClick={() => handleSelect(index)}
+        >
+          {item}
+        </button>
+      ))}
     </div>
   );
 };
@@ -136,9 +126,13 @@ const Account = () => {
   return (
     <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 ">
       <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
-        <NavigationMenu onSelect={setSelectedMenuItem} />
-        <div className="p-4 bg-gray-100 shadow-inner">
-          {renderEditComponent()}
+        <div className="flex">
+          <div className="w-1/4 p-4 bg-gray-200 shadow-inner">
+            <NavigationMenu onSelect={setSelectedMenuItem} />
+          </div>
+          <div className="w-3/4 p-4 bg-gray-100 shadow-inner">
+            {renderEditComponent()}
+          </div>
         </div>
       </div>
     </div>
