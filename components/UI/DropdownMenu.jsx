@@ -4,7 +4,11 @@ import avatar from "../../public/avatar.png";
 import Image from "next/image";
 import { onLogout } from "../../api/AuthAPI";
 import { useDispatch } from "react-redux";
-import { setUserLoginStatus } from "../../store/reducers/authReducer";
+import {
+  setUserLoginStatus,
+  setUserEmail,
+} from "../../store/reducers/authReducer";
+import { toast } from "react-toastify";
 
 const DropdownMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,8 +17,15 @@ const DropdownMenu = () => {
   const dispatch = useDispatch();
 
   const handleLogout = async () => {
-    await onLogout();
-    dispatch(setUserLoginStatus(false));
+    try {
+      await onLogout();
+      router.push("/");
+      dispatch(setUserLoginStatus(false));
+      dispatch(setUserEmail(null));
+    } catch (error) {
+      console.log(error);
+      toast.error("Error occurred during logout");
+    }
   };
 
   const handleClickOutside = (event) => {
