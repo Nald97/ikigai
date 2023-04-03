@@ -10,13 +10,18 @@ export default function Signin() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    onAuthStateChanged(auth, (response) => {
+    const unsubscribe = onAuthStateChanged(auth, (response) => {
       if (response?.accessToken) {
         router.push("/Profile");
       } else {
         setLoading(false);
       }
     });
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
+
   return loading ? <Loader /> : <SigninComponent />;
 }

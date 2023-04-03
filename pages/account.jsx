@@ -49,6 +49,7 @@ const Account = () => {
   const [selectedMenuItem, setSelectedMenuItem] = useState(0);
   const [ikigaiElements, setIkigaiElements] = useState({});
   const [userIkigai, setUserIkigai] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const { currentUser } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -68,13 +69,15 @@ const Account = () => {
     }
     if (currentUser) {
       fetchIkigaiElements();
+      setLoading(false);
     }
   }, [currentUser]);
 
   const renderEditComponent = () => {
-    if (!currentUser || !ikigaiElements) {
-      return null;
+    if (loading) {
+      return <div>Loading...</div>;
     }
+
     switch (selectedMenuItem) {
       case 0:
         return <AvatarForm />;
@@ -120,8 +123,6 @@ const Account = () => {
         return null;
     }
   };
-
-  console.log("userIkigai", userIkigai);
 
   return (
     <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 ">

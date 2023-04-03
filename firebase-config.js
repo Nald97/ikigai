@@ -1,5 +1,4 @@
 // Import the functions you need from the SDKs you need
-import { useEffect } from "react";
 import { initializeApp } from "firebase/app";
 import { getFirestore, setDoc, doc } from "@firebase/firestore";
 import { getDatabase } from "@firebase/database";
@@ -13,7 +12,6 @@ const firebaseConfig = {
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 

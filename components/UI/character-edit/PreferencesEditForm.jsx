@@ -1,21 +1,37 @@
 import React, { useState, useEffect } from "react";
 import RenderSection from "../../common/RenderSection";
-import { editProfile } from "../../../api/FirestoreAPI";
+import { editProfile, updateSelectedCounts } from "../../../api/FirestoreAPI";
 
 const PreferencesEditForm = ({ ikigaiElements, userIkigai, userId }) => {
   const [selectedInterests, setSelectedInterests] = useState([]);
   const [selectedHobbies, setSelectedHobbies] = useState([]);
   const [selectedValues, setSelectedValues] = useState([]);
+  const [previousSelections, setPreviousSelections] = useState({
+    interests: [],
+    hobbies: [],
+    values: [],
+  });
 
   useEffect(() => {
     if (userIkigai) {
       setSelectedInterests(userIkigai?.what_do_you_love?.interests || []);
       setSelectedHobbies(userIkigai?.what_do_you_love?.hobbies || []);
       setSelectedValues(userIkigai?.what_do_you_love?.values || []);
+      setPreviousSelections({
+        interests: userIkigai?.what_do_you_love?.interests || [],
+        hobbies: userIkigai?.what_do_you_love?.hobbies || [],
+        values: userIkigai?.what_do_you_love?.values || [],
+      });
     }
-  }, [userIkigai, setSelectedInterests, setSelectedHobbies, setSelectedValues]);
+  }, [
+    userIkigai,
+    setSelectedInterests,
+    setSelectedHobbies,
+    setSelectedValues,
+    setPreviousSelections,
+  ]);
 
-  const handleSaveChanges = () => {
+  const handleSaveChanges = async () => {
     const updatedData = {
       ikigai: {
         ...userIkigai,
@@ -26,6 +42,14 @@ const PreferencesEditForm = ({ ikigaiElements, userIkigai, userId }) => {
         },
       },
     };
+
+    const newSelections = {
+      interests: selectedInterests,
+      hobbies: selectedHobbies,
+      values: selectedValues,
+    };
+
+    await updateSelectedCounts(newSelections, previousSelections);
 
     editProfile(userId, updatedData);
   };

@@ -8,22 +8,19 @@ import {
   query,
   where,
   setDoc,
+  getDoc,
   deleteDoc,
   getDocs,
-  orderBy,
-  serverTimestamp,
+  writeBatch,
 } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { setCurrentUser } from "../store/reducers/authReducer";
 import { useDispatch } from "react-redux";
 
-let postsRef = collection(firestore, "posts");
 let userRef = collection(firestore, "users");
-let likeRef = collection(firestore, "likes");
-let commentsRef = collection(firestore, "comments");
-let connectionRef = collection(firestore, "connections");
 let ikigaiRef = collection(firestore, "ikigai");
 let suggestionsRef = collection(firestore, "suggestions");
+const batch = writeBatch(firestore);
 
 export const checkNameUniqueness = async (name) => {
   const q = query(userRef, where("name", "==", name));
@@ -35,68 +32,100 @@ export const checkNameUniqueness = async (name) => {
   return true;
 };
 
+export const incrementSelectedCounts = async (selectedItems) => {
+  for (const category in selectedItems) {
+    const docRef = doc(ikigaiRef, category);
+
+    try {
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        for (const item of selectedItems[category]) {
+          const currentCount = docSnap.data()[item] || 0;
+          batch.update(docRef, { [item]: currentCount + 1 });
+        }
+      } else {
+        console.error(`Document "${category}" does not exist.`);
+      }
+    } catch (error) {
+      console.error("Error incrementing counts for category:", category, error);
+    }
+  }
+
+  try {
+    await batch.commit();
+  } catch (error) {
+    console.error("Error committing batch:", error);
+  }
+};
+
+export const updateSelectedCounts = async (
+  newSelections,
+  previousSelections
+) => {
+  for (const category in newSelections) {
+    const docRef = doc(ikigaiRef, category);
+
+    for (const item of newSelections[category]) {
+      if (!previousSelections[category].includes(item)) {
+        try {
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            const batch = writeBatch(firestore);
+            const currentCount = docSnap.data()[item] || 0;
+            batch.update(docRef, { [item]: currentCount + 1 });
+            await batch.commit();
+          } else {
+            console.error(`Document "${category}" does not exist.`);
+          }
+        } catch (error) {
+          console.error("Error incrementing counts for item:", item, error);
+        }
+      }
+    }
+
+    for (const item of previousSelections[category]) {
+      if (!newSelections[category].includes(item)) {
+        try {
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            const batch = writeBatch(firestore);
+            const currentCount = docSnap.data()[item] || 0;
+            batch.update(docRef, { [item]: currentCount - 1 });
+            await batch.commit();
+          } else {
+            console.error(`Document "${category}" does not exist.`);
+          }
+        } catch (error) {
+          console.error("Error decrementing counts for item:", item, error);
+        }
+      }
+    }
+  }
+};
+
 export const getIkigaiElements = async () => {
   const q = query(ikigaiRef);
   const ikigaiSnapshot = await getDocs(q);
   let ikigaiElements = {};
   ikigaiSnapshot.forEach((doc) => {
-    ikigaiElements[doc.id] = Object.keys(doc.data());
+    console.log(doc.data());
+    const sortedKeys = Object.entries(doc.data())
+      .sort((a, b) => b[1] - a[1])
+      .map(([key]) => key);
+    ikigaiElements[doc.id] = sortedKeys;
   });
+
   console.log(ikigaiElements);
+
   return ikigaiElements;
 };
 
-export const getIkigaiSuggestions = async () => {
-  const q = query(suggestionsRef);
-  const suggestionsSnapshot = await getDocs(q);
-  let suggestions = {};
-
-  // Assuming there is only one document
-  const doc = suggestionsSnapshot.docs[0];
-
-  if (doc) {
-    suggestions = doc.data();
-  }
-
-  console.log(suggestions);
-  return suggestions;
-};
-
-export const postStatus = (object) => {
-  addDoc(postsRef, object)
-    .then(() => {
-      toast.success("Post has been added successfully");
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-};
-
-export const getStatus = (setAllStatus) => {
-  const q = query(postsRef, orderBy("timeStamp"));
-  onSnapshot(q, (response) => {
-    setAllStatus(
-      response.docs.map((docs) => {
-        return { ...docs.data(), id: docs.id };
-      })
-    );
-  });
-};
+/*{Data Analysis and Data Science: 8, Digital Marketing and Social Media Strategy: 3, Project Management and Agile Methodologies: 3, Software Development and Engineering: 20, Artificial Intelligence and Machine Learning: 10, …} */
 
 export const getAllUsers = (setAllUsers) => {
   onSnapshot(userRef, (response) => {
     setAllUsers(
-      response.docs.map((docs) => {
-        return { ...docs.data(), id: docs.id };
-      })
-    );
-  });
-};
-
-export const getSingleStatus = (setAllStatus, id) => {
-  const singlePostQuery = query(postsRef, where("userID", "==", id));
-  onSnapshot(singlePostQuery, (response) => {
-    setAllStatus(
       response.docs.map((docs) => {
         return { ...docs.data(), id: docs.id };
       })
@@ -159,56 +188,4 @@ export const addDatatoUser = (userID, payload) => {
     .catch((err) => {
       console.log(err);
     });
-};
-
-export const postComment = (postId, comment, timeStamp, name) => {
-  try {
-    addDoc(commentsRef, {
-      postId,
-      comment,
-      timeStamp,
-      name,
-    });
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-export const getComments = (postId, setComments) => {
-  try {
-    let singlePostQuery = query(commentsRef, where("postId", "==", postId));
-
-    onSnapshot(singlePostQuery, (response) => {
-      const comments = response.docs.map((doc) => {
-        return {
-          id: doc.id,
-          ...doc.data(),
-        };
-      });
-
-      setComments(comments);
-    });
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-export const updatePost = (id, status, postImage) => {
-  let docToUpdate = doc(postsRef, id);
-  try {
-    updateDoc(docToUpdate, { status, postImage });
-    toast.success("Post has been updated!");
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-export const deletePost = (id) => {
-  let docToDelete = doc(postsRef, id);
-  try {
-    deleteDoc(docToDelete);
-    toast.success("Post has been Deleted!");
-  } catch (err) {
-    console.log(err);
-  }
 };

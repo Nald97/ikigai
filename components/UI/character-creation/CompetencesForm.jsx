@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import RenderSection from "../../common/RenderSection";
-import { getIkigaiElements } from "../../../api/FirestoreAPI";
 
+// Define the CompetencesForm component with its expected props
 const CompetencesForm = ({
   topSkills,
   knowledge,
@@ -14,6 +14,7 @@ const CompetencesForm = ({
   setSelectedExpertise,
   userIkigai,
 }) => {
+  // This useEffect hook sets the initial state of the form based on the userIkigai prop
   useEffect(() => {
     if (userIkigai) {
       setSelectedTopSkills(userIkigai.what_are_you_good_at.skills || []);
@@ -26,6 +27,8 @@ const CompetencesForm = ({
     setSelectedKnowledge,
     setSelectedExpertise,
   ]);
+
+  // Render the form sections for top skills, knowledge, and areas of expertise
   return (
     <div>
       <RenderSection

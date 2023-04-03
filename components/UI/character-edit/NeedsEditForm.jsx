@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
 import RenderSection from "../../common/RenderSection";
-import { editProfile } from "../../../api/FirestoreAPI";
+import { editProfile, updateSelectedCounts } from "../../../api/FirestoreAPI";
 
 const NeedsEditForm = ({ ikigaiElements, userIkigai, userId }) => {
   const [selectedWorldNeeds, setSelectedWorldNeeds] = useState([]);
   const [selectedCommunityNeeds, setSelectedCommunityNeeds] = useState([]);
   const [selectedPersonalNeeds, setSelectedPersonalNeeds] = useState([]);
+  const [previousSelections, setPreviousSelections] = useState({
+    world: [],
+    community: [],
+    you: [],
+  });
 
   useEffect(() => {
     if (userIkigai) {
@@ -14,15 +19,21 @@ const NeedsEditForm = ({ ikigaiElements, userIkigai, userId }) => {
         userIkigai?.what_the_world_needs?.community || []
       );
       setSelectedPersonalNeeds(userIkigai?.what_the_world_needs?.you || []);
+      setPreviousSelections({
+        world: userIkigai?.what_the_world_needs?.world || [],
+        community: userIkigai?.what_the_world_needs?.community || [],
+        you: userIkigai?.what_the_world_needs?.you || [],
+      });
     }
   }, [
     userIkigai,
     setSelectedWorldNeeds,
     setSelectedCommunityNeeds,
     setSelectedPersonalNeeds,
+    setPreviousSelections,
   ]);
 
-  const handleSaveChanges = () => {
+  const handleSaveChanges = async () => {
     const updatedData = {
       ikigai: {
         ...userIkigai,
@@ -33,6 +44,14 @@ const NeedsEditForm = ({ ikigaiElements, userIkigai, userId }) => {
         },
       },
     };
+
+    const newSelections = {
+      world: selectedWorldNeeds,
+      community: selectedCommunityNeeds,
+      you: selectedPersonalNeeds,
+    };
+
+    await updateSelectedCounts(newSelections, previousSelections);
 
     editProfile(userId, updatedData);
   };

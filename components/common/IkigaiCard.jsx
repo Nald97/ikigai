@@ -8,8 +8,8 @@ const IkigaiCard = ({ title, cardElements }) => {
         <span>{title}</span>
       </div>
       <ul className="list-inside space-y-2">
-        {cardElements.map((cardElement) => (
-          <li>
+        {cardElements.map((cardElement, index) => (
+          <li key={index}>
             <div className="text-teal-600">{cardElement}</div>
           </li>
         ))}

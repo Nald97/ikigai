@@ -3,12 +3,22 @@ import { createSlice } from "@reduxjs/toolkit";
 const getInitialValue = (key, defaultValue) => {
   if (typeof window === "undefined") return defaultValue;
   const value = localStorage.getItem(key);
-  return value ? JSON.parse(value) : defaultValue;
+
+  if (key === "userEmail") {
+    return value && value !== "undefined" ? value : defaultValue;
+  }
+
+  if (value && value !== "undefined") {
+    return JSON.parse(value);
+  } else {
+    return defaultValue;
+  }
 };
 
 const initialState = {
   currentUser: getInitialValue("currentUser", null),
   userLoginStatus: getInitialValue("isLoggedIn", false),
+  userEmail: getInitialValue("userEmail", null),
 };
 
 const authSlice = createSlice({
@@ -23,9 +33,14 @@ const authSlice = createSlice({
       state.userLoginStatus = action.payload;
       localStorage.setItem("isLoggedIn", action.payload);
     },
+    setUserEmail: (state, action) => {
+      state.userEmail = action.payload;
+      localStorage.setItem("userEmail", action.payload);
+    },
   },
 });
 
-export const { setCurrentUser, setUserLoginStatus } = authSlice.actions;
+export const { setCurrentUser, setUserLoginStatus, setUserEmail } =
+  authSlice.actions;
 
 export default authSlice.reducer;

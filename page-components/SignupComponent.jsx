@@ -2,10 +2,12 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { RegisterAPI } from "../api/AuthAPI";
 import { postUserData, checkNameUniqueness } from "../api/FirestoreAPI";
-import { getUniqueID } from "../helper/getUniqueId";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { setUserLoginStatus } from "../store/reducers/authReducer";
+import {
+  setUserLoginStatus,
+  setUserEmail,
+} from "../store/reducers/authReducer";
 
 const SignupComponent = () => {
   const router = useRouter();
@@ -31,7 +33,7 @@ const SignupComponent = () => {
 
       dispatch(setUserLoginStatus(true));
       router.push("/CharacterCreation");
-      localStorage.setItem("userEmail", res.user.email);
+      dispatch(setUserEmail(credentials.email));
     } catch (err) {
       console.log(err);
       toast.error("Cannot Create your Account");

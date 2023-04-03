@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   getIkigaiElements,
   addDatatoUser,
-  getCurrentUser,
+  incrementSelectedCounts,
 } from "../api/FirestoreAPI";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
@@ -65,6 +65,26 @@ const CharacterCreation = () => {
     fetchIkigaiElements();
   }, []);
 
+  const incrementCounts = async () => {
+    const allSelected = {
+      interests: selectedInterests,
+      skills: selectedTopSkills,
+      hobbies: selectedHobbies,
+      values: selectedValues,
+      knowledge: selectedKnowledge,
+      expertise: selectedExpertise,
+      world: selectedWorldNeeds,
+      community: selectedCommunityNeeds,
+      you: selectedPersonalNeeds,
+    };
+
+    try {
+      await incrementSelectedCounts(allSelected);
+    } catch (error) {
+      console.error("Error incrementing counts:", error);
+    }
+  };
+
   const handleNext = async () => {
     if (step < 6) {
       setStep(step + 1);
@@ -94,6 +114,7 @@ const CharacterCreation = () => {
       if (userId) {
         try {
           await addDatatoUser(userId, ikigaiData);
+          await incrementCounts();
           router.push("/Profile");
           toast.success("Data saved successfully");
         } catch (error) {
