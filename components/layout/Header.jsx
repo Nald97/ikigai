@@ -5,15 +5,18 @@ import logo from "../../public/abstract.png";
 import user from "../../public/user.png";
 import { AiOutlineHome, AiOutlineUserSwitch } from "react-icons/ai";
 import { BsBriefcase } from "react-icons/bs";
+import { MdOutlineExplore } from "react-icons/md";
 import React, { useEffect, useState } from "react";
 import DropdownMenu from "../UI/DropdownMenu";
 import Link from "next/link";
+import SearchBar from "../common/SearchBar";
 
 const Header = () => {
   const router = useRouter();
   const path = router.pathname;
 
   const isLoggedInRedux = useSelector((state) => state.auth.userLoginStatus);
+  const currentUser = useSelector((state) => state.auth.currentUser);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -64,9 +67,22 @@ const Header = () => {
                   onClick={() => router.push("/")}
                 />
               </li>
+              <li>
+                <MdOutlineExplore
+                  size={30}
+                  color="white"
+                  className="cursor-pointer hover:text-gray-400 transition-colors duration-200"
+                  onClick={() => router.push("/explore")}
+                />
+              </li>
             </ul>
           </nav>
-          <div className="ml-8">
+          {path === "/explore" && (
+            <div className="ml-4">
+              <SearchBar />
+            </div>
+          )}
+          <div className="ml-4">
             <DropdownMenu />
           </div>
         </div>

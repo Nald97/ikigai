@@ -2,12 +2,24 @@ import React, { useState, useEffect } from "react";
 import { getIkigaiElements } from "../api/FirestoreAPI";
 
 import { useSelector, useDispatch } from "react-redux";
-import AvatarForm from "../components/UI/character-creation/AvatarForm";
+import AvatarEditForm from "../components/UI/character-edit/AvatarEditForm";
 import SocialLinksEditForm from "../components/UI/character-edit/SocialLinksEditForm";
 import DescriptionEditForm from "../components/UI/character-edit/DescriptionEditForm";
 import CompetencesEditForm from "../components/UI/character-edit/CompetencesEditForm";
 import PreferencesEditForm from "../components/UI/character-edit/PreferencesEditForm";
 import NeedsEditForm from "../components/UI/character-edit/NeedsEditForm";
+
+/**
+ * @summary NavigationMenu component.
+ * @description
+ * Renders a navigation menu to switch between different user edit forms.
+ *
+ * ![Preview](./docs/images/nav-menu-preview.png)
+ *
+ * @param {Object} props - Component properties.
+ * @param {Function} props.onSelect - A callback function that is called when a menu item is selected.
+ * @returns {JSX.Element} The rendered navigation menu.
+ */
 
 const NavigationMenu = ({ onSelect }) => {
   const menuItems = [
@@ -45,6 +57,25 @@ const NavigationMenu = ({ onSelect }) => {
   );
 };
 
+/**
+ * @summary Account component.
+ *
+ * @description
+ * Renders a user account management interface.
+ * Provides options for the user to edit their avatar, social links, description, competences, preferences, and needs.
+ *
+ * @requires react: React hooks useState, useEffect
+ * @requires react-redux: useSelector, useDispatch
+ * @requires ../api/FirestoreAPI: getIkigaiElements
+ * @requires ../components/UI/character-edit/AvatarEditForm: AvatarEditForm
+ * @requires ../components/UI/character-edit/SocialLinksEditForm: SocialLinksEditForm
+ * @requires ../components/UI/character-edit/DescriptionEditForm: DescriptionEditForm
+ * @requires ../components/UI/character-edit/CompetencesEditForm: CompetencesEditForm
+ * @requires ../components/UI/character-edit/PreferencesEditForm: PreferencesEditForm
+ * @requires ../components/UI/character-edit/NeedsEditForm: NeedsEditForm
+ * @returns {JSX.Element} The rendered Account component.
+ */
+
 const Account = () => {
   const [selectedMenuItem, setSelectedMenuItem] = useState(0);
   const [ikigaiElements, setIkigaiElements] = useState({});
@@ -80,7 +111,7 @@ const Account = () => {
 
     switch (selectedMenuItem) {
       case 0:
-        return <AvatarForm />;
+        return <AvatarEditForm />;
       case 1:
         return (
           <SocialLinksEditForm

@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import avatar from "../../public/avatar.png";
 import Image from "next/image";
 import { onLogout } from "../../api/AuthAPI";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   setUserLoginStatus,
   setUserEmail,
@@ -15,6 +15,8 @@ const DropdownMenu = () => {
   const router = useRouter();
   const menuRef = useRef(null);
   const dispatch = useDispatch();
+
+  const { currentUser } = useSelector((state) => state.auth);
 
   const handleLogout = async () => {
     try {
@@ -44,13 +46,15 @@ const DropdownMenu = () => {
   return (
     <div className="relative" ref={menuRef}>
       <button onClick={() => setIsOpen(!isOpen)} className="focus:outline-none">
-        <Image
-          src={avatar}
-          alt="Avatar"
-          width={40}
-          height={40}
-          className="rounded-full"
-        />
+        <div className="inline-flex items-center justify-center w-10 h-10 border-2 border-white rounded-full">
+          <Image
+            src={currentUser?.avatarUrl ? currentUser?.avatarUrl : avatar}
+            alt="Avatar"
+            width={40}
+            height={40}
+            className="rounded-full"
+          />
+        </div>
       </button>
       {isOpen && (
         <div className="absolute right-0 mt-2 w-48 rounded-lg bg-white py-2 shadow-xl">

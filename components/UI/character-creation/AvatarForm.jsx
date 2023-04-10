@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 
-const AvatarForm = () => {
-  const [avatar, setAvatar] = useState();
+const AvatarForm = ({ avatar, setAvatar, onAvatarSelected }) => {
+  const handleUpload = (event) => {
+    const file = event.target.files[0];
+    setAvatar(file);
+    onAvatarSelected(file);
+  };
 
   return (
     <div className="flex flex-col items-center space-y-4">
@@ -12,7 +16,7 @@ const AvatarForm = () => {
         className="border border-gray-400 p-2"
         type="file"
         accept="image/*"
-        onChange={(event) => setAvatar(event.target.files[0])}
+        onChange={handleUpload}
       />
       {avatar && (
         <img

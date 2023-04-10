@@ -3,11 +3,9 @@ import { onAuthStateChanged } from "firebase/auth";
 import ProfileComponent from "../page-components/ProfileComponent";
 import { auth } from "../firebase-config";
 import Loader from "../components/common/Loader";
-import { getCurrentUser } from "../api/FirestoreAPI";
+import { getCurrentUser, getAllUsers } from "../api/FirestoreAPI";
 import { useRouter } from "next/router";
 import { useSelector, useDispatch } from "react-redux";
-
-import { setCurrentUser } from "../store/reducers/authReducer";
 
 const Profile = () => {
   const router = useRouter();
