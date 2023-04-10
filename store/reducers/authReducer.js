@@ -19,6 +19,7 @@ const initialState = {
   currentUser: getInitialValue("currentUser", null),
   userLoginStatus: getInitialValue("isLoggedIn", false),
   userEmail: getInitialValue("userEmail", null),
+  allUsers: getInitialValue("allUsers", []),
 };
 
 const authSlice = createSlice({
@@ -37,10 +38,13 @@ const authSlice = createSlice({
       state.userEmail = action.payload;
       localStorage.setItem("userEmail", action.payload);
     },
+    setAllUsers: (state, action) => {
+      state.allUsers = action.payload;
+    },
   },
 });
 
-export const { setCurrentUser, setUserLoginStatus, setUserEmail } =
+export const { setCurrentUser, setUserLoginStatus, setUserEmail, setAllUsers } =
   authSlice.actions;
 
 export default authSlice.reducer;

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>pages/account.jsx - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"
+    />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="styles/prettify-tomorrow.css"
+    />
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css" />
+  </head>
+  <body>
+    <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+    <label for="nav-trigger" class="navicon-button x">
+      <div class="navicon"></div>
+    </label>
+
+    <label for="nav-trigger" class="overlay"></label>
+
+    <nav>
+      <li class="nav-link nav-home-link"><a href="index.html">Home</a></li>
+      <li class="nav-heading"><a href="global.html">Globals</a></li>
+      <li class="nav-item">
+        <span class="nav-item-type type-function">F</span
+        ><span class="nav-item-name"
+          ><a href="global.html#Account">Account</a></span
+        >
+      </li>
+      <li class="nav-item">
+        <span class="nav-item-type type-function">F</span
+        ><span class="nav-item-name"
+          ><a href="global.html#CharacterCreation">CharacterCreation</a></span
+        >
+      </li>
+      <li class="nav-item">
+        <span class="nav-item-type type-function">F</span
+        ><span class="nav-item-name"
+          ><a href="global.html#NavigationMenu">NavigationMenu</a></span
+        >
+      </li>
+      <li class="nav-item">
+        <span class="nav-item-type type-member">M</span
+        ><span class="nav-item-name"
+          ><a href="global.html#addDatatoUser">addDatatoUser</a></span
+        >
+      </li>
+      <li class="nav-item">
+        <span class="nav-item-type type-member">M</span
+        ><span class="nav-item-name"
+          ><a href="global.html#checkNameUniqueness"
+            >checkNameUniqueness</a
+          ></span
+        >
+      </li>
+      <li class="nav-item">
+        <span class="nav-item-type type-member">M</span
+        ><span class="nav-item-name"
+          ><a href="global.html#editProfile">editProfile</a></span
+        >
+      </li>
+      <li class="nav-item">
+        <span class="nav-item-type type-member">M</span
+        ><span class="nav-item-name"
+          ><a href="global.html#getAllUsers">getAllUsers</a></span
+        >
+      </li>
+      <li class="nav-item">
+        <span class="nav-item-type type-member">M</span
+        ><span class="nav-item-name"
+          ><a href="global.html#getCurrentUser">getCurrentUser</a></span
+        >
+      </li>
+      <li class="nav-item">
+        <span class="nav-item-type type-member">M</span
+        ><span class="nav-item-name"
+          ><a href="global.html#getIkigaiElements">getIkigaiElements</a></span
+        >
+      </li>
+      <li class="nav-item">
+        <span class="nav-item-type type-member">M</span
+        ><span class="nav-item-name"
+          ><a href="global.html#getSingleUser">getSingleUser</a></span
+        >
+      </li>
+      <li class="nav-item">
+        <span class="nav-item-type type-member">M</span
+        ><span class="nav-item-name"
+          ><a href="global.html#incrementSelectedCounts"
+            >incrementSelectedCounts</a
+          ></span
+        >
+      </li>
+      <li class="nav-item">
+        <span class="nav-item-type type-member">M</span
+        ><span class="nav-item-name"
+          ><a href="global.html#postUserData">postUserData</a></span
+        >
+      </li>
+      <li class="nav-item">
+        <span class="nav-item-type type-member">M</span
+        ><span class="nav-item-name"
+          ><a href="global.html#updateSelectedCounts"
+            >updateSelectedCounts</a
+          ></span
+        >
+      </li>
+    </nav>
+
+    <div id="main">
+      <h1 class="page-title">pages/account.jsx</h1>
+
+      <section>
+        <article>
+          <pre
+            class="prettyprint source linenums"
+          ><code>import React, { useState, useEffect } from "react";
+import { getIkigaiElements } from "../api/FirestoreAPI";
+
+import { useSelector, useDispatch } from "react-redux";
+import AvatarForm from "../components/UI/character-creation/AvatarForm";
+import SocialLinksEditForm from "../components/UI/character-edit/SocialLinksEditForm";
+import DescriptionEditForm from "../components/UI/character-edit/DescriptionEditForm";
+import CompetencesEditForm from "../components/UI/character-edit/CompetencesEditForm";
+import PreferencesEditForm from "../components/UI/character-edit/PreferencesEditForm";
+import NeedsEditForm from "../components/UI/character-edit/NeedsEditForm";
+
+/**
+ * @summary NavigationMenu component.
+ * @description
+ * Renders a navigation menu to switch between different user edit forms.
+ *
+ * ![Preview](./docs/images/nav-menu-preview.png)
+ *
+ * @param {Object} props - Component properties.
+ * @param {Function} props.onSelect - A callback function that is called when a menu item is selected.
+ * @returns {JSX.Element} The rendered navigation menu.
+ */
+
+const NavigationMenu = ({ onSelect }) => {
+  const menuItems = [
+    "Change Avatar",
+    "Change Social Links",
+    "Change Description",
+    "Change Competences",
+    "Change Preferences",
+    "Change Needs",
+  ];
+
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const handleSelect = (index) => {
+    setActiveIndex(index);
+    onSelect(index);
+  };
+
+  return (
+    &lt;div className="flex flex-col space-y-4">
+      {menuItems.map((item, index) => (
+        &lt;button
+          key={index}
+          className={`w-full text-left px-4 py-2 focus:outline-none ${
+            index === activeIndex
+              ? "bg-blue-600 text-white font-semibold"
+              : "text-gray-700 hover:text-gray-900 hover:bg-gray-200"
+          }`}
+          onClick={() => handleSelect(index)}
+        >
+          {item}
+        &lt;/button>
+      ))}
+    &lt;/div>
+  );
+};
+
+/**
+ * @summary Account component.
+ *
+ * @description
+ * Renders a user account management interface.
+ * Provides options for the user to edit their avatar, social links, description, competences, preferences, and needs.
+ *
+ * @requires react: React hooks useState, useEffect
+ * @requires react-redux: useSelector, useDispatch
+ * @requires ../api/FirestoreAPI: getIkigaiElements
+ * @requires ../components/UI/character-creation/AvatarForm: AvatarForm
+ * @requires ../components/UI/character-edit/SocialLinksEditForm: SocialLinksEditForm
+ * @requires ../components/UI/character-edit/DescriptionEditForm: DescriptionEditForm
+ * @requires ../components/UI/character-edit/CompetencesEditForm: CompetencesEditForm
+ * @requires ../components/UI/character-edit/PreferencesEditForm: PreferencesEditForm
+ * @requires ../components/UI/character-edit/NeedsEditForm: NeedsEditForm
+ * @returns {JSX.Element} The rendered Account component.
+ */
+
+const Account = () => {
+  const [selectedMenuItem, setSelectedMenuItem] = useState(0);
+  const [ikigaiElements, setIkigaiElements] = useState({});
+  const [userIkigai, setUserIkigai] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const { currentUser } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const userId = currentUser ? currentUser.id : null;
+
+  useEffect(() => {
+    async function fetchedUserData() {
+      if (currentUser) {
+        setUserIkigai(currentUser?.ikigai);
+      }
+    }
+    fetchedUserData();
+
+    async function fetchIkigaiElements() {
+      const fetchedIkigaiElements = await getIkigaiElements();
+      setIkigaiElements(fetchedIkigaiElements);
+    }
+    if (currentUser) {
+      fetchIkigaiElements();
+      setLoading(false);
+    }
+  }, [currentUser]);
+
+  const renderEditComponent = () => {
+    if (loading) {
+      return &lt;div>Loading...&lt;/div>;
+    }
+
+    switch (selectedMenuItem) {
+      case 0:
+        return &lt;AvatarForm />;
+      case 1:
+        return (
+          &lt;SocialLinksEditForm
+            userSocialLinks={currentUser.socialLinks}
+            userId={userId}
+          />
+        );
+      case 2:
+        return (
+          &lt;DescriptionEditForm
+            userDescription={currentUser.description}
+            userId={userId}
+          />
+        );
+      case 3:
+        return (
+          &lt;CompetencesEditForm
+            userIkigai={userIkigai}
+            ikigaiElements={ikigaiElements}
+            userId={userId}
+          />
+        );
+      case 4:
+        return (
+          &lt;PreferencesEditForm
+            userIkigai={userIkigai}
+            ikigaiElements={ikigaiElements}
+            userId={userId}
+          />
+        );
+      case 5:
+        return (
+          &lt;NeedsEditForm
+            userIkigai={userIkigai}
+            ikigaiElements={ikigaiElements}
+            userId={userId}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    &lt;div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 ">
+      &lt;div className="max-w-7xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+        &lt;div className="flex">
+          &lt;div className="w-1/4 p-4 bg-gray-200 shadow-inner">
+            &lt;NavigationMenu onSelect={setSelectedMenuItem} />
+          &lt;/div>
+          &lt;div className="w-3/4 p-4 bg-gray-100 shadow-inner">
+            {renderEditComponent()}
+          &lt;/div>
+        &lt;/div>
+      &lt;/div>
+    &lt;/div>
+  );
+};
+
+export default Account;
+</code></pre>
+        </article>
+      </section>
+    </div>
+
+    <br class="clear" />
+
+    <footer>
+      Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on
+      Mon Apr 03 2023 14:49:53 GMT+0300 (GMT+03:00) using the Minami theme.
+    </footer>
+
+    <script>
+      prettyPrint();
+    </script>
+    <script src="scripts/linenumber.js"></script>
+  </body>
+</html>

@@ -1,4 +1,45 @@
-import React, { useState, useEffect, useRef } from "react";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>pages/CharacterCreation.jsx - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#Account">Account</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#CharacterCreation">CharacterCreation</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#NavigationMenu">NavigationMenu</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#addDatatoUser">addDatatoUser</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#checkNameUniqueness">checkNameUniqueness</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#editProfile">editProfile</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#getAllUsers">getAllUsers</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#getCurrentUser">getCurrentUser</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#getIkigaiElements">getIkigaiElements</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#getSingleUser">getSingleUser</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#incrementSelectedCounts">incrementSelectedCounts</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#postUserData">postUserData</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#updateSelectedCounts">updateSelectedCounts</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">pages/CharacterCreation.jsx</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect, useRef } from "react";
 import {
   getIkigaiElements,
   addDatatoUser,
@@ -6,14 +47,13 @@ import {
 } from "../api/FirestoreAPI";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
-import { storage, auth } from "../firebase-config";
+import { auth } from "../firebase-config";
 import AvatarForm from "../components/UI/character-creation/AvatarForm";
 import SocialLinksForm from "../components/UI/character-creation/SocialLinksForm";
 import DescriptionForm from "../components/UI/character-creation/DescriptionForm";
 import CompetencesForm from "../components/UI/character-creation/CompetencesForm";
 import NeedsForm from "../components/UI/character-creation/NeedsForm";
 import PreferencesForm from "../components/UI/character-creation/PreferencesForm";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 /**
  * @summary CharacterCreation component.
@@ -108,7 +148,7 @@ const CharacterCreation = () => {
   };
 
   const handleNext = async () => {
-    if (step < 6) {
+    if (step &lt; 6) {
       setStep(step + 1);
     } else {
       const ikigaiData = {
@@ -154,55 +194,27 @@ const CharacterCreation = () => {
     }
   };
 
-  const handleAvatarSelected = async (file) => {
-    if (userId && file) {
-      const storageRef = ref(
-        storage,
-        `user-profile-image/${userId}/${file.name}`
-      );
-      const uploadTask = uploadBytesResumable(storageRef, file);
-
-      uploadTask.on(
-        "state_changed",
-        () => {},
-        (error) => {
-          console.error("Upload failed:", error);
-        },
-        async () => {
-          const url = await getDownloadURL(uploadTask.snapshot.ref);
-          await addDatatoUser(userId, { avatarUrl: url });
-        }
-      );
-    }
-  };
-
   const renderStep = () => {
     switch (step) {
       case 1:
-        return (
-          <AvatarForm
-            avatar={avatar}
-            setAvatar={setAvatar}
-            onAvatarSelected={handleAvatarSelected}
-          />
-        );
+        return &lt;AvatarForm avatar={avatar} setAvatar={setAvatar} />;
       case 2:
         return (
-          <SocialLinksForm
+          &lt;SocialLinksForm
             socialLinks={socialLinks}
             setSocialLinks={setSocialLinks}
           />
         );
       case 3:
         return (
-          <DescriptionForm
+          &lt;DescriptionForm
             description={description}
             setDescription={setDescription}
           />
         );
       case 4:
         return (
-          <CompetencesForm
+          &lt;CompetencesForm
             topSkills={topSkills}
             selectedTopSkills={selectedTopSkills}
             setSelectedTopSkills={setSelectedTopSkills}
@@ -216,7 +228,7 @@ const CharacterCreation = () => {
         );
       case 5:
         return (
-          <PreferencesForm
+          &lt;PreferencesForm
             values={values}
             selectedValues={selectedValues}
             setSelectedValues={setSelectedValues}
@@ -230,7 +242,7 @@ const CharacterCreation = () => {
         );
       case 6:
         return (
-          <NeedsForm
+          &lt;NeedsForm
             worldNeeds={worldNeeds}
             selectedWorldNeeds={selectedWorldNeeds}
             setSelectedWorldNeeds={setSelectedWorldNeeds}
@@ -250,15 +262,15 @@ const CharacterCreation = () => {
   console.log(currentUser, userId);
 
   return (
-    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden">
-        <div className="p-8">
-          <h1 className="text-2xl font-bold text-center mb-8">
+    &lt;div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+      &lt;div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+        &lt;div className="p-8">
+          &lt;h1 className="text-2xl font-bold text-center mb-8">
             Character Creation - Step {step}
-          </h1>
+          &lt;/h1>
           {renderStep()}
-          <div className="flex justify-between mt-8">
-            <button
+          &lt;div className="flex justify-between mt-8">
+            &lt;button
               className={`py-2 px-4 font-semibold rounded-lg shadow-md text-white ${
                 step === 1
                   ? "bg-gray-400 cursor-not-allowed"
@@ -268,18 +280,37 @@ const CharacterCreation = () => {
               disabled={step === 1}
             >
               Back
-            </button>
-            <button
+            &lt;/button>
+            &lt;button
               className="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:ring-green-300 focus:outline-none"
               onClick={handleNext}
             >
               {step === 7 ? "Submit" : "Next"}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+            &lt;/button>
+          &lt;/div>
+        &lt;/div>
+      &lt;/div>
+    &lt;/div>
   );
 };
 
 export default CharacterCreation;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Mon Apr 03 2023 14:49:53 GMT+0300 (GMT+03:00) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

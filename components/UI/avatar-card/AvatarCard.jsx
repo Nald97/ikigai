@@ -13,7 +13,13 @@ const AvatarCard = () => {
   return (
     <div className="bg-white p-3 border-t-4 border-green-400">
       <div className="image overflow-hidden">
-        <Image className="h-auto w-full mx-auto" src={avatar} alt="" />
+        <Image
+          className="h-auto w-full mx-auto"
+          src={currentUser?.avatarUrl ? currentUser?.avatarUrl : avatar}
+          alt="Avatar"
+          width={256}
+          height={256}
+        />
       </div>
       <h1 className="text-gray-900 font-bold text-xl leading-8 my-1">
         {currentUser?.name}

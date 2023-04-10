@@ -1,0 +1,31 @@
+{
+  "source": {
+    "include": [
+      "api",
+      "components",
+      "context",
+      "layout",
+      "page-components",
+      "pages"
+    ],
+    "includePattern": ".+\\.(js|jsx|jsdoc|x)?$"
+  },
+  "plugins": ["node_modules/jsdoc-to-markdown"],
+
+  "opts": {
+    "template": "node_modules/minami",
+
+    "encoding": "utf8",
+    "destination": "./docs/",
+    "recurse": true,
+    "verbose": true,
+    "private": false
+  },
+  "tags": {
+    "allowUnknownTags": true
+  },
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": false
+  }
+}
