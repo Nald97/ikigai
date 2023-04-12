@@ -1,18 +1,28 @@
 import React, { useState, useEffect } from "react";
-import { getAllUsers } from "../api/FirestoreAPI";
+import { getAllUsers, getSingleUser } from "../api/FirestoreAPI";
 import { useDispatch, useSelector } from "react-redux";
 import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/router";
 import { auth } from "../firebase-config";
 import avatar from "../public/avatar.png";
 
-const UserProfile = ({ userData }) => {
+const UserExploreCard = ({ userData }) => {
+  const router = useRouter();
+
   const truncatedDescription =
     userData?.description?.length > 50
       ? userData.description.slice(0, 50) + "..."
       : userData.description;
+
+  const handleCardClick = () => {
+    router.push(`/user/${userData.userID}`);
+  };
+
   return (
-    <div className="bg-white shadow-md rounded-lg overflow-hidden">
+    <div
+      className="bg-white shadow-md rounded-lg overflow-hidden cursor-pointer"
+      onClick={handleCardClick}
+    >
       <div className="px-4 py-2">
         <div className="flex items-center">
           <img
@@ -79,11 +89,6 @@ const Explore = () => {
   }, [router, dispatch]);
   console.log(allUsers);
 
-  const handleFilterChange = (event) => {
-    // Implement filtering logic based on the selected option
-    console.log(event.target.value);
-  };
-
   const handleSortChange = (event) => {
     const sortOption = event.target.value;
 
@@ -108,13 +113,10 @@ const Explore = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <FilterOptions
-        handleFilterChange={handleFilterChange}
-        handleSortChange={handleSortChange}
-      />
+      <FilterOptions handleSortChange={handleSortChange} />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {users?.map((user) => (
-          <UserProfile key={user.userID} userData={user} />
+          <UserExploreCard key={user.userID} userData={user} />
         ))}
       </div>
     </div>

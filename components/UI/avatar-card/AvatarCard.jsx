@@ -6,9 +6,9 @@ import { HiOutlineMail } from "react-icons/hi";
 import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
 import Link from "next/link";
 
-const AvatarCard = () => {
+const AvatarCard = ({ currentUser }) => {
   // Access currentUser from the Redux store
-  const currentUser = useSelector((state) => state.auth.currentUser);
+  // const currentUser = useSelector((state) => state.auth.currentUser);
 
   return (
     <div className="bg-white p-3 border-t-4 border-green-400">

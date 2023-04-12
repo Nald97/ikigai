@@ -8,8 +8,9 @@ import ExperienceCard from "../UI/experience-card/ExperienceCard";
 import PersonalNeedsCard from "../UI/needs-card/PersonalNeedsCard";
 import AspirationCard from "../UI/aspirations/Aspirations";
 import { useDispatch } from "react-redux";
+import { getSingleUser } from "../../api/FirestoreAPI";
 
-function ProfileCard({ onEdit, currentUser }) {
+function ProfileCard({ currentUser }) {
   const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
   const [currentProfile, setCurrentProfile] = useState({});
@@ -29,7 +30,7 @@ function ProfileCard({ onEdit, currentUser }) {
         </div>
 
         <div className="w-full md:w-9/12 mx-2 h-64">
-          <PersonalNeedsCard currentUser={currentUser} onEdit={onEdit} />
+          <PersonalNeedsCard currentUser={currentUser} />
 
           <div className="my-4" />
           <ExperienceCard currentUser={currentUser} />

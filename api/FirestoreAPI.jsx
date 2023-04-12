@@ -191,16 +191,16 @@ export const getCurrentUser = (dispatch) => {
  * @param {Function} setCurrentUser - A function that sets the current user.
  * @param {string} email - The email of the user to set as the current user.
  */
-export const getSingleUser = (setCurrentUser, email) => {
-  const singleUserQuery = query(userRef, where("email", "==", email));
-  onSnapshot(singleUserQuery, (response) => {
-    setCurrentUser(
-      response.docs.map((docs) => {
-        return { ...docs.data(), id: docs.id };
-      })[0]
-    );
-  });
-};
+export async function getSingleUser(userID) {
+  const user = doc(userRef, userID);
+  const userSnap = await getDoc(user);
+  if (userSnap.exists()) {
+    return { ...userSnap.data(), userID: userSnap.id };
+  } else {
+    console.error("User not found");
+    return null;
+  }
+}
 
 /**
  * Posts user data to the Firestore.
