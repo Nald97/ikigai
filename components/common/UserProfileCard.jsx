@@ -10,36 +10,36 @@ import AspirationCard from "../UI/aspirations/Aspirations";
 import { useDispatch } from "react-redux";
 import { getSingleUser } from "../../api/FirestoreAPI";
 
-function ProfileCard({ currentUser }) {
+function UserProfileCard() {
   const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
   const [currentProfile, setCurrentProfile] = useState({});
 
-  useMemo(() => {
+  useEffect(() => {
     if (router?.query?.id) {
       getSingleUser(setCurrentProfile, router?.query?.id);
     }
-  }, []);
+  }, [router?.query?.id]);
 
   // Pass the data for the selected character to the corresponding components
   return (
     <div className="container mx-auto my-5 p-5">
       <div className="md:flex no-wrap md:-mx-2 ">
         <div className="w-full md:w-3/12 md:mx-2">
-          <AvatarCard currentUser={currentUser} />
+          <AvatarCard currentUser={currentProfile} />
         </div>
 
         <div className="w-full md:w-9/12 mx-2 h-64">
-          <PersonalNeedsCard currentUser={currentUser} />
+          <PersonalNeedsCard currentUser={currentProfile} />
 
           <div className="my-4" />
-          <ExperienceCard currentUser={currentUser} />
+          <ExperienceCard currentUser={currentProfile} />
           <div className="my-4" />
-          <AspirationCard currentUser={currentUser} />
+          <AspirationCard currentUser={currentProfile} />
         </div>
       </div>
     </div>
   );
 }
 
-export default ProfileCard;
+export default UserProfileCard;
