@@ -5,6 +5,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/router";
 import { auth } from "../firebase-config";
 import avatar from "../public/avatar.png";
+import SearchFilter from "../components/common/SearchFilter";
 
 const UserExploreCard = ({ userData }) => {
   const router = useRouter();
@@ -73,6 +74,7 @@ const FilterOptions = ({ handleSortChange }) => {
 
 const Explore = () => {
   const [users, setUsers] = useState([]);
+  const [filterOpened, setFilterOpened] = useState(false);
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -111,10 +113,21 @@ const Explore = () => {
     }
   }, [allUsers]);
 
+  const toggleFilter = () => {
+    setFilterOpened(!filterOpened);
+  };
+
   return (
     <div className="container mx-auto p-4">
-      <FilterOptions handleSortChange={handleSortChange} />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <div className="flex justify-between">
+        <SearchFilter onToggle={toggleFilter} />
+        <FilterOptions handleSortChange={handleSortChange} />
+      </div>
+      <div
+        className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 ${
+          filterOpened ? "mt-60" : ""
+        }`}
+      >
         {users?.map((user) => (
           <UserExploreCard key={user.userID} userData={user} />
         ))}

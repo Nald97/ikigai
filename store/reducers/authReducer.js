@@ -20,6 +20,7 @@ const initialState = {
   userLoginStatus: getInitialValue("isLoggedIn", false),
   userEmail: getInitialValue("userEmail", null),
   allUsers: getInitialValue("allUsers", []),
+  // filteredUsers: getInitialValue("filteredUsers", []),
 };
 
 const authSlice = createSlice({
@@ -41,10 +42,18 @@ const authSlice = createSlice({
     setAllUsers: (state, action) => {
       state.allUsers = action.payload;
     },
+    // setFilteredUsers: (state, action) => {
+    //   state.filteredUsers = action.payload;
+    // },
   },
 });
 
-export const { setCurrentUser, setUserLoginStatus, setUserEmail, setAllUsers } =
-  authSlice.actions;
+export const {
+  setCurrentUser,
+  setUserLoginStatus,
+  setUserEmail,
+  setAllUsers,
+  // setFilteredUsers,
+} = authSlice.actions;
 
 export default authSlice.reducer;
