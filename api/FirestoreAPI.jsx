@@ -12,7 +12,11 @@ import {
   writeBatch,
 } from "firebase/firestore";
 import { toast } from "react-toastify";
-import { setCurrentUser, setAllUsers } from "../store/reducers/authReducer";
+import {
+  setCurrentUser,
+  setAllUsers,
+  setFilteredUsers,
+} from "../store/reducers/authReducer";
 import { useDispatch } from "react-redux";
 
 let userRef = collection(firestore, "users");
@@ -141,32 +145,78 @@ export const getIkigaiElements = async () => {
   return ikigaiElements;
 };
 
-/**
- * Sets all users in the provided callback.
- * @param {Function} setAllUsers - A function that sets the list of all users.
- */
-// export const getAllUsers = (dispatch) => {
+// export const getAllUsers = (dispatch, searchTerm = "") => {
 //   onSnapshot(userRef, (response) => {
-//     const users = response.docs.map((docs) => {
-//       return { ...docs.data(), id: docs.id };
-//     });
+//     const users = response.docs
+//       .map((docs) => {
+//         return { ...docs.data(), id: docs.id };
+//       })
+//       .filter((user) =>
+//         user.name.toLowerCase().includes(searchTerm.toLowerCase())
+//       );
+
 //     dispatch(setAllUsers(users));
 //   });
 // };
 
-export const getAllUsers = (dispatch, searchTerm = "") => {
+const getNestedValue = (obj, keys) => {
+  return keys.reduce((acc, key) => (acc && acc[key] ? acc[key] : null), obj);
+};
+export const getAllUsers = (dispatch, searchTerm = "", searchKeys = []) => {
   onSnapshot(userRef, (response) => {
     const users = response.docs
       .map((docs) => {
         return { ...docs.data(), id: docs.id };
       })
-      .filter((user) =>
-        user.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      .filter((user) => {
+        if (searchKeys.length === 0) {
+          return user.name.toLowerCase().includes(searchTerm.toLowerCase());
+        } else {
+          return searchKeys.some((key) => {
+            const keys = key.split(".");
+            const nestedValue = getNestedValue(user, keys);
+            if (Array.isArray(nestedValue)) {
+              return nestedValue.some((item) =>
+                item.toLowerCase().includes(searchTerm.toLowerCase())
+              );
+            } else {
+              return (
+                nestedValue &&
+                typeof nestedValue === "string" &&
+                nestedValue.toLowerCase().includes(searchTerm.toLowerCase())
+              );
+            }
+          });
+        }
+      });
 
     dispatch(setAllUsers(users));
   });
 };
+
+// export const getFilteredUsers = (
+//   dispatch,
+//   searchKeys = [],
+//   searchTerm = ""
+// ) => {
+//   onSnapshot(userRef, (response) => {
+//     const users = response.docs
+//       .map((docs) => {
+//         return { ...docs.data(), id: docs.id };
+//       })
+//       .filter((user) => {
+//         return searchKeys.some((key) => {
+//           return (
+//             user[key] &&
+//             typeof user[key] === "string" &&
+//             user[key].toLowerCase().includes(searchTerm.toLowerCase())
+//           );
+//         });
+//       });
+
+//     dispatch(setFilteredUsers(users));
+//   });
+// };
 
 /**
  * Sets the current user in the Redux store based on the user's email in localStorage.

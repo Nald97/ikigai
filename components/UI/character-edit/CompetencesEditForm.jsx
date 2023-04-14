@@ -19,13 +19,13 @@ const CompetencesEditForm = ({ ikigaiElements, userIkigai, userId }) => {
   // with the user's existing skills, knowledge, and expertise.
   useEffect(() => {
     if (userIkigai) {
-      setSelectedTopSkills(userIkigai.what_are_you_good_at?.skills || []);
-      setSelectedKnowledge(userIkigai.what_are_you_good_at?.knowledge || []);
-      setSelectedExpertise(userIkigai.what_are_you_good_at?.expertise || []);
+      setSelectedTopSkills(userIkigai?.what_are_you_good_at?.skills || []);
+      setSelectedKnowledge(userIkigai?.what_are_you_good_at?.knowledge || []);
+      setSelectedExpertise(userIkigai?.what_are_you_good_at?.expertise || []);
       setPreviousSelections({
-        skills: userIkigai.what_are_you_good_at?.skills || [],
-        knowledge: userIkigai.what_are_you_good_at?.knowledge || [],
-        expertise: userIkigai.what_are_you_good_at?.expertise || [],
+        skills: userIkigai?.what_are_you_good_at?.skills || [],
+        knowledge: userIkigai?.what_are_you_good_at?.knowledge || [],
+        expertise: userIkigai?.what_are_you_good_at?.expertise || [],
       });
     }
   }, [
