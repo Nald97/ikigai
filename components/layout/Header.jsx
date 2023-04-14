@@ -77,11 +77,7 @@ const Header = () => {
               </li>
             </ul>
           </nav>
-          {path === "/explore" && (
-            <div className="ml-4">
-              <SearchBar />
-            </div>
-          )}
+
           <div className="ml-4">
             <DropdownMenu />
           </div>
