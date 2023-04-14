@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { getAllUsers } from "../../api/FirestoreAPI";
 import { useDispatch } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFilter } from "@fortawesome/free-solid-svg-icons";
 
 const SearchFilter = ({ onToggle }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -9,6 +11,7 @@ const SearchFilter = ({ onToggle }) => {
   const dispatch = useDispatch();
 
   const checkboxLabels = [
+    { name: "Name", key: "name" },
     { name: "World Needs", key: "ikigai.what_the_world_needs.world" },
     { name: "Personal Needs", key: "ikigai.what_the_world_needs.you" },
     { name: "Community Needs", key: "ikigai.what_the_world_needs.community" },
@@ -40,12 +43,22 @@ const SearchFilter = ({ onToggle }) => {
     const key = event.target.name;
     const isChecked = event.target.checked;
 
-    setCheckboxStates({ ...checkboxStates, [key]: isChecked });
-
-    if (isChecked) {
-      setSelectedFilters([...selectedFilters, key]);
+    if (key === "name") {
+      setCheckboxStates((prevStates) => {
+        return Object.keys(prevStates).reduce((acc, k) => {
+          acc[k] = k === key ? isChecked : false;
+          return acc;
+        }, {});
+      });
+      setSelectedFilters(isChecked ? [key] : []);
     } else {
-      setSelectedFilters(selectedFilters.filter((filter) => filter !== key));
+      setCheckboxStates({ ...checkboxStates, [key]: isChecked });
+
+      if (isChecked) {
+        setSelectedFilters([...selectedFilters, key]);
+      } else {
+        setSelectedFilters(selectedFilters.filter((filter) => filter !== key));
+      }
     }
   };
 
@@ -58,7 +71,6 @@ const SearchFilter = ({ onToggle }) => {
     setSearchTerm("");
     setSelectedFilters([]);
 
-    // Reset checkbox states
     setCheckboxStates(
       Object.keys(checkboxStates).reduce((acc, key) => {
         acc[key] = false;
@@ -72,23 +84,24 @@ const SearchFilter = ({ onToggle }) => {
   return (
     <div className="relative">
       <button
-        className="text-white bg-blue-500 hover:bg-blue-600 font-medium py-2 px-4 rounded mb-4 ml-4"
+        className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded mb-4 ml-4 focus:outline-none"
         onClick={toggleForm}
       >
-        Ikigai Filter
+        <FontAwesomeIcon icon={faFilter} className="mr-1" />
+        Advanced Filter
       </button>
       {showForm && (
-        <div className="absolute bg-white shadow-md rounded-lg p-2.5 w-[600px] m-auto">
-          <div className="mb-2">
+        <div className="bg-white shadow-md rounded-lg p-4 w-[600px] m-auto">
+          <div className="mb-4">
             <input
-              className="border border-gray-300 rounded py-2 px-4 w-full"
+              className="border border-gray-300 rounded py-2 px-4 w-full focus:outline-none focus:border-blue-300"
               type="text"
               placeholder="Search..."
               value={searchTerm}
               onChange={handleSearchTermChange}
             />
           </div>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-3 gap-4">
             {checkboxLabels.map(({ name, key }) => (
               <div key={key}>
                 <input
@@ -98,24 +111,26 @@ const SearchFilter = ({ onToggle }) => {
                   name={key}
                   checked={checkboxStates[key]}
                   onChange={handleCheckboxChange}
+                  disabled={key !== "name" && checkboxStates["name"]}
                 />
                 <label htmlFor={key}>{name}</label>
               </div>
             ))}
           </div>
-          <button
-            className="text-white bg-blue-500 hover:bg-blue-600 font-medium py-2 px-4 rounded mt-4"
-            onClick={applyFilter}
-          >
-            Apply Filter
-          </button>
-
-          <button
-            className="text-white bg-red-500 hover:bg-red-600 font-medium py-2 px-4 rounded mt-4 ml-4"
-            onClick={resetFilter}
-          >
-            Clear All
-          </button>
+          <div className="flex items-center justify-start mt-4">
+            <button
+              className="text-white bg-blue-500 hover:bg-blue-600 font-medium py-2 px-4 rounded mr-4"
+              onClick={applyFilter}
+            >
+              Apply Filter
+            </button>
+            <button
+              className="text-white bg-red-500 hover:bg-red-600 font-medium py-2 px-4 rounded"
+              onClick={resetFilter}
+            >
+              Clear All
+            </button>
+          </div>
         </div>
       )}
     </div>

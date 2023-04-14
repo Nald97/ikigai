@@ -145,78 +145,53 @@ export const getIkigaiElements = async () => {
   return ikigaiElements;
 };
 
-// export const getAllUsers = (dispatch, searchTerm = "") => {
-//   onSnapshot(userRef, (response) => {
-//     const users = response.docs
-//       .map((docs) => {
-//         return { ...docs.data(), id: docs.id };
-//       })
-//       .filter((user) =>
-//         user.name.toLowerCase().includes(searchTerm.toLowerCase())
-//       );
-
-//     dispatch(setAllUsers(users));
-//   });
-// };
-
 const getNestedValue = (obj, keys) => {
   return keys.reduce((acc, key) => (acc && acc[key] ? acc[key] : null), obj);
 };
+
 export const getAllUsers = (dispatch, searchTerm = "", searchKeys = []) => {
+  const defaultSearchKeys = [
+    "name",
+    "ikigai.what_the_world_needs.world",
+    "ikigai.what_the_world_needs.you",
+    "ikigai.what_the_world_needs.community",
+    "ikigai.what_are_you_good_at.expertise",
+    "ikigai.what_are_you_good_at.knowledge",
+    "ikigai.what_are_you_good_at.skills",
+    "ikigai.what_do_you_love.hobbies",
+    "ikigai.what_do_you_love.interests",
+    "ikigai.what_do_you_love.values",
+  ];
+  if (searchKeys.length === 0) {
+    searchKeys = defaultSearchKeys;
+  }
+
   onSnapshot(userRef, (response) => {
     const users = response.docs
       .map((docs) => {
         return { ...docs.data(), id: docs.id };
       })
       .filter((user) => {
-        if (searchKeys.length === 0) {
-          return user.name.toLowerCase().includes(searchTerm.toLowerCase());
-        } else {
-          return searchKeys.some((key) => {
-            const keys = key.split(".");
-            const nestedValue = getNestedValue(user, keys);
-            if (Array.isArray(nestedValue)) {
-              return nestedValue.some((item) =>
-                item.toLowerCase().includes(searchTerm.toLowerCase())
-              );
-            } else {
-              return (
-                nestedValue &&
-                typeof nestedValue === "string" &&
-                nestedValue.toLowerCase().includes(searchTerm.toLowerCase())
-              );
-            }
-          });
-        }
+        return searchKeys.some((key) => {
+          const keys = key.split(".");
+          const nestedValue = getNestedValue(user, keys);
+          if (Array.isArray(nestedValue)) {
+            return nestedValue.some((item) =>
+              item.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+          } else {
+            return (
+              nestedValue &&
+              typeof nestedValue === "string" &&
+              nestedValue.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+          }
+        });
       });
 
     dispatch(setAllUsers(users));
   });
 };
-
-// export const getFilteredUsers = (
-//   dispatch,
-//   searchKeys = [],
-//   searchTerm = ""
-// ) => {
-//   onSnapshot(userRef, (response) => {
-//     const users = response.docs
-//       .map((docs) => {
-//         return { ...docs.data(), id: docs.id };
-//       })
-//       .filter((user) => {
-//         return searchKeys.some((key) => {
-//           return (
-//             user[key] &&
-//             typeof user[key] === "string" &&
-//             user[key].toLowerCase().includes(searchTerm.toLowerCase())
-//           );
-//         });
-//       });
-
-//     dispatch(setFilteredUsers(users));
-//   });
-// };
 
 /**
  * Sets the current user in the Redux store based on the user's email in localStorage.

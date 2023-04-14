@@ -9,6 +9,10 @@ import store from "../store/store";
 import Loader from "../components/common/Loader";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faFilter } from "@fortawesome/free-solid-svg-icons";
+
+library.add(faFilter);
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [loading, setLoading] = useState(false);
